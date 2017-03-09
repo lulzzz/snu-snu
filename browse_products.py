@@ -110,6 +110,6 @@ def shopping_list_add(browser, search_string, number_products, category):
     return None
 
 # TEST CODE
-'''browser = webdriver.Chrome()
+browser = webdriver.Chrome()
 authentication.sign_in(browser, 'louis.kerley@yandex.com', 'rJUirp8qB64kD7Qs')
-shopping_list_add(browser, 'crazy', 44, 37)'''
+shopping_list_add(browser, 'crazy', 44, 37)
