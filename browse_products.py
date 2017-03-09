@@ -11,12 +11,24 @@ from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import ElementNotVisibleException
+from selenium.common.exceptions import TimeoutException
 
-def get_product_href(product_element):
-    """Returns the value of the href attribute within the appropriate child
-    of a given selenium web page element"""
-    return product_element.find_element_by_class_name(
+def get_product_link(product_element):
+    """Returns the link element inside a product listing element"""
+    try:
+        return product_element.find_element_by_class_name(
                                                 PRODUCT_PAGE_LINK_CLASS)
+    except NoSuchElementException:
+        print('Unable to find product page link. Skipping item.')
+        return None
+
+def go_home(browser):
+    try: 
+        logo_link = browser.find_element_by_id(NAV_LOGO_ID)
+        logo_link.click()
+    except NoSuchElementException:
+        browser.get(AMAZON_URL)
 
 def search(browser, search_term, category_index = 0):
     '''
@@ -48,6 +60,7 @@ def search(browser, search_term, category_index = 0):
         submit_button.click()
     except NoSuchElementException:
         search_field.send_keys(keys.ENTER)
+    return True
 
 
 def choose_category(browser):
@@ -55,7 +68,8 @@ def choose_category(browser):
     Provides a command-line interface for choosing a category from Amazon's 
     drop-down list. Returns the index of the chosen category.
     '''
-    cat_unselected = True;
+    cat_index = 0
+    cat_unselected = True
     while cat_unselected:
         cat_select = Select(browser.find_element_by_xpath(CAT_DROPDOWN_XPATH))
         cat_options = cat_select.options
@@ -89,27 +103,68 @@ def choose_category(browser):
             print('Invalid category index!')
             print('Please enter a number between 0 and ' 
                                 + str(len(cat_options)))
-def shopping_list_add(browser, search_string, number_products, category):
+    return cat_index
+
+def view_items(browser, search_string, number_products, category, 
+                                            item_function = None):
     search(browser, search_string, category)
     current_result = 0
     completed = False
     while not completed:
-        try:
-            product_element = browser.find_element_by_id(
-                                'result_' + str(current_result))
-            product_link = get_product_href(product_element)
-            try:
-                product_link.click()
-            except:
-                browser.get(product_link.get_attribute('href'))
+        product_elements = browser.find_elements_by_id(
+                            'result_' + str(current_result))
+        if(len(product_elements) > 0):
+            product_link = get_product_link(product_elements[0])
+            if not product_link == None:
+                try:
+                    product_link.click()
+                except:
+                    print('Could not click product element. Manually getting link.')
+                    browser.get(product_link.get_attribute('href'))
+                # If present, call a function to do something on the product page
+                if not item_function == None:
+                    try:
+                        item_function(browser)
+                    except TimeoutException:
+                        print('Failed to add item to list. Item page timed out')
+                browser.back()
+        else:
+            next_page_links = browser.find_elements_by_id(NEXT_PAGE_LINK_ID)
+            if len(next_page_links) > 0:
+                next_page_text = browser.find_element_by_id(NEXT_PAGE_STRING_ID)
+                next_page_text.click()
+            else:
+                try:
+                    browser.back()
+                    next_page_text = browser.find_element_by_id(NEXT_PAGE_STRING_ID)
+                    next_page_text.click()
+                except NoSuchElementException:
+                    end_string = ['End of results reached for search: "']
+                    end_string.append(search_string)
+                    end_string.append('". Only ')
+                    end_string.append(str(current_result - 1))
+                    end_string.append(' of the specified ')
+                    end_string.append(str(number_products))
+                    end_string.append(' products viewed.')
+                    print(''.join(end_string))
+                    completed = True
+        current_result += 1
+        if current_result > number_products:
+            completed = True
             
-            
-        except NoSuchElementException:
-            next_page_link = browser.find_element_by_id(NEXT_PAGE_ID)
-            
-    return None
+
+def add_item_list(browser) :
+    try: 
+        list_add_button = browser.find_element_by_id(ADD_TO_LIST_BUTTON_ID)
+        list_add_button.click()
+    except NoSuchElementException:
+        print('Failed to add item to list. No button on page found matching '
+                + 'stored element ids.')
+    except ElementNotVisibleException:
+        print('Failed to add item to list. List add button is not visible.')
+
 
 # TEST CODE
-browser = webdriver.Chrome()
+'''browser = webdriver.Chrome()
 authentication.sign_in(browser, 'louis.kerley@yandex.com', 'rJUirp8qB64kD7Qs')
-shopping_list_add(browser, 'crazy', 44, 37)
+view_items(browser, 'fuck', 160, 40)'''

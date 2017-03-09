@@ -1,3 +1,7 @@
+# General
+AMAZON_URL = 'https://www.amazon.co.uk'
+NAV_LOGO_ID = 'nav-logo'
+
 # Sign-in related:
 SIGN_IN_XPATHS_UK =         ['//*[@id="nav-signin-tooltip"]/a',
                             '//*[@id="nav-link-yourAccount"]',
@@ -14,6 +18,9 @@ SEARCH_FIELD_XPATH = '//*[@id="twotabsearchtextbox"]'
 SEARCH_SUBMIT_XPATH = '//*[@id="nav-search"]/form/div[2]/div/input'
 
 # Product-list related
-
 PRODUCT_PAGE_LINK_CLASS = 's-access-detail-page'
-NEXT_PAGE_ID = 'pagnNextLink'
+NEXT_PAGE_STRING_ID = 'pagnNextString'
+NEXT_PAGE_LINK_ID = 'pagnNextLink'
+
+# Product page related
+ADD_TO_LIST_BUTTON_ID = 'add-to-wishlist-button-submit'

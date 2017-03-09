@@ -9,29 +9,42 @@ from helpers import is_int
 # External:
 from selenium import webdriver
 import getpass
+from enum import Enum
+
+class ProductAction(Enum):
+	search = 0
+	view = 1
+	add_shopping_list = 2
 
 class Command():
 	'''Used as a parent class for all commands and 
 		to represent generic descriptions of commands'''
-	def __init__(self, name, description, associated_function = None):
+	def __init__(self, name, description, associated_action = None):
 		self.name = name
 		self.description = description
-		self.associated_function = associated_function
+		self.associated_action = associated_action
+
 class ProductCommand(Command):
-	def __init__(self, name, description, associated_function,
+	def __init__(self, name, description, associated_action,
 						search_category, search_string, number_of_items):
 		super(ProductCommand, self).__init__(name, description, 
-											associated_function)
+											associated_action)
 		self.search_string = search_string
 		self.number_of_items = number_of_items
 		self.search_category = search_category
 
-COMMANDS = [Command('shopadd', 
-			'Add products matching a search term to the shopping list.',
-			browse_products.shopping_list_add),
-			Command('execute', 'Execute all queued commands.')]
+COMMANDS = [Command('search',
+			'Carry out a single product search.',
+			ProductAction.search),
+			Command('view',
+			'View products matching a search.',
+			ProductAction.view),
+			Command('listadd',
+			'Add products matching a search term to the default wishlist.',
+			ProductAction.add_shopping_list),
+			Command('execute', 'Execute all queued commands.'),
+			Command('exit', 'Quit snu-snu.')]
 
-	
 def initialise():
 	"""Performs initilisation and Amazon authentication"""
 	
@@ -72,6 +85,11 @@ def run(browser):
 		for c in COMMANDS:
 			print(' {0:10}{1}'.format(c.name, c.description))
 
+		if len(queued_commands) > 0:
+			current_commands_msg = ['\n(There are currently ']
+			current_commands_msg.append(str(len(queued_commands)))
+			current_commands_msg.append(' commands queued.)')
+			print(''.join(current_commands_msg))
 		awaiting_command = True
 		selected_command = None
 		while awaiting_command:
@@ -102,6 +120,19 @@ def run(browser):
 						print('Input not recognised!')
 			else:
 				print('Error: there are no commands in the queue to execute.\n')
+		elif selected_command.name == 'exit':				
+			decided = False
+			while not decided:
+				user_decision = input('Do you really want to quit snu-snu?'
+							+ '\nPlease enter Y or N...\n')
+				if user_decision == 'y' or user_decision == 'Y':
+					print('Quitting...')
+					exit()
+				elif user_decision == 'n' or user_decision == 'N':
+					print('Continuing...')
+				else:
+					print('Input not recognised!')
+
 		else: 
 			intro = ['']
 			intro.append('The selected command "')
@@ -110,21 +141,23 @@ def run(browser):
 			intro.append(selected_command.description)
 			print(''.join(intro))
 			print('Please enter the search term to use when finding products.')
-			category_number = browse_products.choose_category(browser)			
 			search_term = input()
-			print('How many products should the command be executed on?')
+			category_number = browse_products.choose_category(browser)		
 			number_of_products = 0
-			valid_int = False
-			while not valid_int:
-				product_count = (input())
-				if is_int(product_count):
-					number_of_products = int(product_count)
-					valid_int = True
-				else:
-					print("That wasn't a valid integer. Please re-enter...")
+			if not selected_command.name == 'search':
+				print('How many products should the command be executed on?')
+				valid_int = False
+				while not valid_int:
+					product_count = (input())
+					if is_int(product_count):
+						number_of_products = int(product_count)
+						valid_int = True
+					else:
+						print("That wasn't a valid integer. Please re-enter...")
+			
 			full_command = ProductCommand(selected_command.name,
 										selected_command.description,
-										selected_command.associated_function,
+										selected_command.associated_action,
 										category_number,
 										search_term,
 										number_of_products)
@@ -135,13 +168,37 @@ def run(browser):
 			success.append('" sucessfully added to the queue!')
 			success.append('\nEnter the "execute" command to carry it out.\n')
 			print(''.join(success))
-					
-			
+
 def execute_commands(browser, command_list):
 	""" Executes a list of commands defined by Command objects. Returns True
 	if completely succesful"""
+	error_has_occured = False
 	for c in command_list:
-		if c is ProductCommand:
-			c.associated_function(browser, c.search_string, c.number_of_items)
-	
+		if c.associated_action == ProductAction.search:
+			print('made it to if block!')
+			if not browse_products.search(browser, 
+									c.search_string, 
+									c.search_category):
+				error_has_occured = True
+
+		elif c.associated_action == ProductAction.view:
+			if not browse_products.view_items(browser, 
+										c.search_string, 
+										c.number_of_items,
+										c.search_category):
+				error_has_occured = True
+
+		elif c.associated_action == ProductAction.add_shopping_list:
+			if not browse_products.view_items(browser, 
+										c.search_string, 
+										c.number_of_items,
+										c.search_category,
+										browse_products.add_item_list):
+				error_has_occured = True
+		browse_products.go_home(browser)
+	if error_has_occured:
+		return False
+	else:
+		return True
+
 initialise()
