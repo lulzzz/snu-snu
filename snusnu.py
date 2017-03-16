@@ -2,56 +2,98 @@
 
 # Local:
 import authentication
+import data
 import browse_products
 from helpers import is_int
 
-
 # External:
+import sys
+import json
 from selenium import webdriver
 import getpass
 from enum import Enum
 
-class ProductAction(Enum):
-	search = 0
-	view = 1
-	add_shopping_list = 2
 
-class Command():
-	'''Used as a parent class for all commands and 
-		to represent generic descriptions of commands'''
-	def __init__(self, name, description, associated_action = None):
-		self.name = name
-		self.description = description
-		self.associated_action = associated_action
 
-class ProductCommand(Command):
-	def __init__(self, name, description, associated_action,
-						search_category, search_string, number_of_items):
-		super(ProductCommand, self).__init__(name, description, 
-											associated_action)
-		self.search_string = search_string
-		self.number_of_items = number_of_items
-		self.search_category = search_category
-
-COMMANDS = [Command('search',
+COMMANDS = [data.Command('search',
 			'Carry out a single product search.',
-			ProductAction.search),
-			Command('view',
+			data.ProductAction.search),
+			data.Command('view',
 			'View products matching a search.',
-			ProductAction.view),
-			Command('listadd',
+			data.ProductAction.view),
+			data.Command('listadd',
 			'Add products matching a search term to the default wishlist.',
-			ProductAction.add_shopping_list),
-			Command('execute', 'Execute all queued commands.'),
-			Command('exit', 'Quit snu-snu.')]
+			data.ProductAction.add_shopping_list),
+			data.Command('execute', 'Execute all queued commands.'),
+			data.Command('exit', 'Quit snu-snu.')]
+
+# Functions for handling args:
+def json_input(browser):
+	try:
+		commands = data.product_commands_from_file(sys.argv[2])
+		print(commands[0].associated_action)
+		execute_commands(browser, commands)
+	except FileNotFoundError:
+		print('Path: ' + sys.argv[2] + ' does not exist.')
+		print['Quitting...']
+		quit()
+
+# Dictionary of dictionaries defining command arguments accepted by snu-snu
+ARGS = {'input': 
+			{'description' : 'attempts to exceute commands from a JSON file.',
+			'required arg count' : 3, 
+			'function' : json_input}}
 
 def initialise():
 	"""Performs initilisation and Amazon authentication"""
+
+	print("""Welcome to snu-snu: the utility that takes the hard work out of 
+training Amazon's recommendation algorithm.\n""")
+	proceed_with_args = False
+	if len(sys.argv) > 1:
+		includes_recognised_arg = False
+		for recognised_arg in ARGS.keys():
+			if sys.argv[1] == recognised_arg:
+				includes_recognised_arg = True
+		if includes_recognised_arg:
+			print('You ran snu-snu with the argument: ' + sys.argv[1])
+			print('This ' + ARGS[sys.argv[1]]['description'])
+			if len(sys.argv) == ARGS[sys.argv[1]]['required arg count']:
+				print('Snu-snu will process your arguments after Amazon login.\n')
+				proceed_with_args = True
+			else:
+				error = ['Error: this argument will only work with a total of ']
+				error.append(str(ARGS[sys.argv[1]]['required arg count']))
+				error.append(' arguments.')
+				print(''.join(error))
+				decided = False
+				print('Do you wish to go to the default snu-snu interface anyway?')
+				while not decided:
+					decision = input('\nPlease enter Y or N...\n')
+					if decision == 'y' or decision == 'Y':
+						print('Continuing...')
+						decided = True
+					elif decision == 'n' or decision == 'N':
+						print('Quitting...')
+						decided = True
+					else:
+						print('Input not recognised')
+						
+	# Tries to get an authenticated browser
+	browser = authenticate()
+
+	if proceed_with_args:
+		ARGS[sys.argv[1]]['function'](browser)
+	else:
+		run(browser)
 	
-	print("""Welcome to snu-snu: the utility that takes the hard
- work out of training Amazon's recommendation algorithm.\n""")
-	print("""you will now be asked for the email address and password for the
+def authenticate():
+	''' Attempts to sign into Amazon and 
+		return a webdriver object if successful '''
+	
+	print("""You will now be asked for the email address and password for the
 Amazon account you wish to train...\n""")
+
 	authenticated = False
 	while not authenticated:
 		email = input('Please enter the email address used for Amazon...\n')
@@ -59,6 +101,7 @@ Amazon account you wish to train...\n""")
 		browser = webdriver.Chrome() # May need browser selection at later date
 		if authentication.sign_in(browser, email, password):
 			authenticated = True
+			return browser
 		else:
 			browser.quit()
 			print('Authentication failed. do you want to try again?')
@@ -72,16 +115,14 @@ Amazon account you wish to train...\n""")
 					print('Snu-snu requires Amazon authentication. Quitting...')
 					exit()
 				else:
-					print('Input not recognised!')
-	run(browser)
-					
+					print('Input not recognised!')	
+
 def run(browser):
 	running = True
 	queued_commands = []
 	while running:
 		print('Below is a list of avaliable commands:\n')
 		print(' {0:10}{1}'.format('NAME', 'DESCRIPTION'))
-		#print(' {0:10}{1}'.format('####', '###########'))
 		for c in COMMANDS:
 			print(' {0:10}{1}'.format(c.name, c.description))
 
@@ -120,7 +161,7 @@ def run(browser):
 						print('Input not recognised!')
 			else:
 				print('Error: there are no commands in the queue to execute.\n')
-		elif selected_command.name == 'exit':				
+		elif selected_command.name == 'exit':
 			decided = False
 			while not decided:
 				user_decision = input('Do you really want to quit snu-snu?'
@@ -133,7 +174,7 @@ def run(browser):
 				else:
 					print('Input not recognised!')
 
-		else: 
+		else:
 			intro = ['']
 			intro.append('The selected command "')
 			intro.append(selected_command.name)
@@ -142,7 +183,7 @@ def run(browser):
 			print(''.join(intro))
 			print('Please enter the search term to use when finding products.')
 			search_term = input()
-			category_number = browse_products.choose_category(browser)		
+			category_number = browse_products.choose_category(browser)
 			number_of_products = 0
 			if not selected_command.name == 'search':
 				print('How many products should the command be executed on?')
@@ -154,14 +195,16 @@ def run(browser):
 						valid_int = True
 					else:
 						print("That wasn't a valid integer. Please re-enter...")
-			
-			full_command = ProductCommand(selected_command.name,
+
+			full_command = data.ProductCommand(selected_command.name,
 										selected_command.description,
 										selected_command.associated_action,
 										category_number,
 										search_term,
 										number_of_products)
 			queued_commands.append(full_command)
+			
+			
 			success = []
 			success.append('Command "')
 			success.append(full_command.name)
@@ -174,23 +217,22 @@ def execute_commands(browser, command_list):
 	if completely succesful"""
 	error_has_occured = False
 	for c in command_list:
-		if c.associated_action == ProductAction.search:
-			print('made it to if block!')
-			if not browse_products.search(browser, 
-									c.search_string, 
+		if c.associated_action == data.ProductAction.search:
+			if not browse_products.search(browser,
+									c.search_string,
 									c.search_category):
 				error_has_occured = True
 
-		elif c.associated_action == ProductAction.view:
-			if not browse_products.view_items(browser, 
-										c.search_string, 
+		elif c.associated_action == data.ProductAction.view:
+			if not browse_products.view_items(browser,
+										c.search_string,
 										c.number_of_items,
 										c.search_category):
 				error_has_occured = True
 
-		elif c.associated_action == ProductAction.add_shopping_list:
-			if not browse_products.view_items(browser, 
-										c.search_string, 
+		elif c.associated_action == data.ProductAction.add_shopping_list:
+			if not browse_products.view_items(browser,
+										c.search_string,
 										c.number_of_items,
 										c.search_category,
 										browse_products.add_item_list):
@@ -200,5 +242,14 @@ def execute_commands(browser, command_list):
 		return False
 	else:
 		return True
-
+def test():
+	fudge_command = data.ProductCommand('listadd',
+			'Add products matching a search term to the default wishlist.',
+										data.ProductAction.add_shopping_list,
+										0,
+										'fudge',
+										1337)
+	print(json.dumps(fudge_command, cls=data.ProductCommandEncoder))
+	data.product_commands_to_file([fudge_command], 'fudge.json')
+test()
 initialise()
