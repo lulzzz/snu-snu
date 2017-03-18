@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 
 # Local:
+import errors
 import authentication
 import data
 import browse_products
 from helpers import is_int
+from helpers import yes_no_input_prompt
 
 # External:
 import sys
@@ -12,8 +14,6 @@ import json
 from selenium import webdriver
 import getpass
 from enum import Enum
-
-
 
 COMMANDS = [data.Command('search',
 			'Carry out a single product search.',
@@ -27,16 +27,13 @@ COMMANDS = [data.Command('search',
 			data.Command('execute', 'Execute all queued commands.'),
 			data.Command('exit', 'Quit snu-snu.')]
 
-# Functions for handling args:
 def json_input(browser):
-	try:
-		commands = data.product_commands_from_file(sys.argv[2])
-		print(commands[0].associated_action)
-		execute_commands(browser, commands)
-	except FileNotFoundError:
-		print('Path: ' + sys.argv[2] + ' does not exist.')
-		print['Quitting...']
-		quit()
+	"""
+	attempts to get JSON representations of commands from a path specified 
+	as an argument and execute all of them.
+	"""
+	commands = data.product_commands_from_file(sys.argv[2])
+	execute_commands(browser, commands)
 
 # Dictionary of dictionaries defining command arguments accepted by snu-snu
 ARGS = {'input': 
@@ -45,9 +42,10 @@ ARGS = {'input':
 			'function' : json_input}}
 
 def initialise():
-	"""Performs initilisation and Amazon authentication"""
-
-	print("""Welcome to snu-snu: the utility that takes the hard work out of 
+	"""
+	Checks arguments and decides whether or not to use the default interface.
+	"""
+	print("""Welcome to snu-snu: the program that takes the hard work out of 
 training Amazon's recommendation algorithm.\n""")
 	proceed_with_args = False
 	if len(sys.argv) > 1:
@@ -63,21 +61,15 @@ training Amazon's recommendation algorithm.\n""")
 				proceed_with_args = True
 			else:
 				error = ['Error: this argument will only work with a total of ']
-				error.append(str(ARGS[sys.argv[1]]['required arg count']))
+				error.append(str(ARGS[sys.argv[1]]['required arg count'] - 1))
 				error.append(' arguments.')
 				print(''.join(error))
-				decided = False
 				print('Do you wish to go to the default snu-snu interface anyway?')
-				while not decided:
-					decision = input('\nPlease enter Y or N...\n')
-					if decision == 'y' or decision == 'Y':
-						print('Continuing...')
-						decided = True
-					elif decision == 'n' or decision == 'N':
-						print('Quitting...')
-						decided = True
-					else:
-						print('Input not recognised')
+				if yes_no_input_prompt():
+					print('Continuing...')
+				else:
+					print('Quitting...')
+					quit()
 						
 	# Tries to get an authenticated browser
 	browser = authenticate()
@@ -88,9 +80,9 @@ training Amazon's recommendation algorithm.\n""")
 		run(browser)
 	
 def authenticate():
-	''' Attempts to sign into Amazon and 
-		return a webdriver object if successful '''
-	
+	""" 
+	Attempts to sign into Amazon and return a webdriver object if successful 
+	"""
 	print("""You will now be asked for the email address and password for the
 Amazon account you wish to train...\n""")
 
@@ -105,17 +97,11 @@ Amazon account you wish to train...\n""")
 		else:
 			browser.quit()
 			print('Authentication failed. do you want to try again?')
-			decided = False
-			while not decided:
-				decision = input('Please enter Y or N...\n')
-				if decision == 'y' or decision == 'Y':
-					print('Retrying...')
-					decided = True
-				elif decision == 'n' or decision == 'N':
-					print('Snu-snu requires Amazon authentication. Quitting...')
-					exit()
-				else:
-					print('Input not recognised!')	
+			if yes_no_input_prompt():
+				print('Retrying...')			
+			else:
+				print('Snu-snu requires Amazon authentication. Quitting...')
+				exit()
 
 def run(browser):
 	running = True
@@ -147,32 +133,22 @@ def run(browser):
 					print('Command(s) executed sucessfully.')
 				else:
 					print('Commands(s) executed with one or more errors.')
-				decided = False
-				while not decided:
-					user_decision = input('Do you wish to issue further commands?'
-								+ '\nPlease enter Y or N...\n')
-					if user_decision == 'n' or user_decision == 'N':
-						print('Quitting...')
-						exit()
-					elif user_decision == 'y' or user_decision == 'Y':
+					print('Do you wish to issue further commands?')
+					if yes_no_input_prompt():
 						queued_commands = []
 						decided = True
 					else:
-						print('Input not recognised!')
+						print('Quitting...')
+						exit()
 			else:
 				print('Error: there are no commands in the queue to execute.\n')
 		elif selected_command.name == 'exit':
-			decided = False
-			while not decided:
-				user_decision = input('Do you really want to quit snu-snu?'
-							+ '\nPlease enter Y or N...\n')
-				if user_decision == 'y' or user_decision == 'Y':
-					print('Quitting...')
-					exit()
-				elif user_decision == 'n' or user_decision == 'N':
-					print('Continuing...')
-				else:
-					print('Input not recognised!')
+			print('Do you really want to quit snu-snu?')
+			if yes_no_input_prompt():
+				print('Quitting...')
+				exit()
+			else:
+				print('Continuing...')
 
 		else:
 			intro = ['']
@@ -213,8 +189,10 @@ def run(browser):
 			print(''.join(success))
 
 def execute_commands(browser, command_list):
-	""" Executes a list of commands defined by Command objects. Returns True
-	if completely succesful"""
+	""" 
+	Executes a list of commands defined by Command objects. Returns True
+	if completely succesful
+	"""
 	error_has_occured = False
 	for c in command_list:
 		if c.associated_action == data.ProductAction.search:
@@ -251,5 +229,5 @@ def test():
 										1337)
 	print(json.dumps(fudge_command, cls=data.ProductCommandEncoder))
 	data.product_commands_to_file([fudge_command], 'fudge.json')
-test()
+#test()
 initialise()

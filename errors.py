@@ -22,3 +22,8 @@ def category_xpath_error():
         elif user_choice == 'y' or user_choice == 'Y':
             print('Continuing with default search category...')
             return True
+
+def file_not_found_error(path):
+	print('The file specified by path: ' + path + ' does not exist.')
+	print('Quitting...')
+	quit()	

@@ -1,3 +1,7 @@
+# Local
+import errors
+
+# External
 import json
 import enum
 from enum import Enum
@@ -39,7 +43,9 @@ class ProductCommandEncoder(json.JSONEncoder):
         return json.JSONEncoder.default(self, obj)
         
 def parse_product_command(obj):
-	'''imports a json representation of a ProductCommand'''	 
+	"""
+	Imports a json representation of a ProductCommand
+	"""	 
 	if 'Search category' in obj: 	# rather than identifiying each
 									# ProductCommand as such
 		return ProductCommand(	obj['Name'],
@@ -50,9 +56,25 @@ def parse_product_command(obj):
 								obj['Number of items'])
 
 def product_commands_to_file(commands, path):
-	with open(path, 'w') as outfile:
-		json.dump(commands, outfile, cls=ProductCommandEncoder)
+	try:
+		with open(path, 'w') as outfile:
+			json.dump(commands, outfile, cls=ProductCommandEncoder)
+	except FileNotFoundError:
+		errors.file_not_found_error(path)
 	
 def product_commands_from_file(path):
-	with open(path, 'r') as data_file:
-		return json.load(data_file, object_hook=parse_product_command)
+	try:
+		with open(path, 'r') as data_file:
+			return json.load(data_file, object_hook=parse_product_command)
+	except FileNotFoundError:
+		errors.file_not_found_error(path)
+		
+def string_from_text_file(path):
+	try:
+		with open(path, 'r') as textfile:
+			return textfile.read()
+	except FileNotFoundError:
+		errors.file_not_found_error(path)
+	
+
+	

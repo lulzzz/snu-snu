@@ -88,17 +88,6 @@ def choose_category(browser):
         if is_int(user_input) and 0 <= int(user_input) <= len(cat_options):
             cat_index = int(user_input);
             selected_cat_name = cat_names[cat_index]
-            print('You have selected the category: ' + selected_cat_name)
-            undecided = True
-            while undecided:
-                accept = input('Enter Y to accept or N to choose again:\n')
-                if accept == 'y' or accept == 'Y':
-                    undecided = False
-                    cat_unselected = False
-                elif accept == 'n' or accept == 'N':
-                    undecided = False
-                else:
-                    print('Input not recognised.')
         else:
             print('Invalid category index!')
             print('Please enter a number between 0 and ' 
