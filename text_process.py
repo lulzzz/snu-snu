@@ -2,8 +2,8 @@
 
 # Local
 import data
-from helpers import is_int
 from helpers import yes_no_input_prompt
+from helpers import int_input_prompt
 
 # External
 import sys
@@ -25,30 +25,34 @@ ADDITIONAL_STOPS = ["it's", "i'm", "i'll", "i'd", "i've",
 					"you're", "you'd", "you've",
 					"you’re", "you’d", "you’ve"]
 					
-PENN_NOUN_TAGS = 		['NP', 'NX', 'NN', 'NNS', 'NNP', 'NNPS']
-PENN_PRONOUN_TAGS = 	['PRP', 'PRP$', 'WP', ' WP$']
-PENN_VERB_TAGS = 		['VP', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ']
-PENN_ADVERB_TAGS = 		['ADVP', ' WHADJP', ' WHAVP', 'RB', 'RBR', 'RBS', 'ADV'
-						'-BNF', '-DIR', '-EXT', '-LOC', '-MNR', '-PRP', '-TMP']
-PENN_ADJECTIVE_TAGS = 	['ADJP', ' WHADJP', 'JJ', 'JJR', 'JJS']
-PENN_PREPOSITION_TAGS =	['PP', 'WHPP', 'IN']
+CHARS_TO_DELETE = '",.?:()[]<>~!–-•—“”“”…_'
 
+# The Dict keys in POS_TAGS match those used for 
+# selecting/storing parts-of-speech in the functions below 
+POS_TAGS = {'nouns':['NP', 'NX', 'NN', 'NNS', 'NNP', 'NNPS'],
+			'pronouns' : ['PRP', 'PRP$', 'WP', ' WP$'],
+			'verbs' : ['VP', 'VB', 'VBD', 'VBG', 'VBN', 'VBP', 'VBZ'],
+			'adverbs' : ['ADVP', ' WHADJP', ' WHAVP', 'RB', 'RBR', 'RBS', 'ADV'
+						'-BNF', '-DIR', '-EXT', '-LOC', '-MNR', '-PRP', '-TMP'],
+			'adjectives' : ['ADJP', ' WHADJP', 'JJ', 'JJR', 'JJS'],
+			'prepositions' : ['PP', 'WHPP', 'IN'],
+			'untagged words' : [None],
+			'miscellaneous words' : []}# The inclusion of 'other words' is an inelegant 
+							   # side-effect of an otherwise elegant solution
 def frequency_analysis():
 	"""
 	Performs simple frequency analysis with options for 
 	minimum word length, number of words and parts-of-speech to be included.
 	"""
 	# get trained Unigram tagger
-	train_sents = treebank.tagged_sents()
 	print('Loading unigram tagger...')
+	train_sents = treebank.tagged_sents()
 	unigram_tagger = UnigramTagger(train_sents)
-			
 	
 	text_string = data.string_from_text_file(sys.argv[2]).lower()
-	chars_to_delete = '",.?()[]<>~!`’–-•—' 
-	# translate() takes a dictionary as input. 
-	# Dict mapping ordinal chars to None is created in place.
-	text_string = text_string.translate({ord(c): None for c in chars_to_delete})
+	# string.translate() takes a Dict as input. 
+	# The Dict mapping ordinal chars to None is created in place:
+	text_string = text_string.translate({ord(c): None for c in CHARS_TO_DELETE})
 	words = text_string.split() # crude tokenisation, keeps contractions
 	english_stops = stopwords.words('english')
 
@@ -57,6 +61,7 @@ def frequency_analysis():
 	for w in words:
 		if w not in stops_set and w not in string.punctuation:
 			cleaned_words.append(w)
+	cleaned_words_tagged = unigram_tagger.tag(cleaned_words)
 	fdist = FreqDist(cleaned_words)
 	#print(english_stops)
 	prelim_results = ['\nFrequency analysis had found ']
@@ -66,10 +71,21 @@ def frequency_analysis():
 	prelim_results.append(str(fdist.N()))
 	prelim_results.append('.')
 	print(''.join(prelim_results))
-	committed = False
+	# Variables for word selection
 	num_words = 100
 	min_word_length = 0
 	max_word_length = 16
+	all_pos_tags_included = True
+	pos_tags_included =     {'untagged words' : True,
+							'nouns' : True,
+							'pronouns' : True,
+							'verbs' : True,
+							'adverbs' : True,
+							'adjectives' : True,
+							'prepositions' : True,
+							'miscellaneous words' : True}
+
+	committed = False
 	while not committed:
 		intro = ['The ']
 		intro.append(str(num_words))
@@ -79,7 +95,23 @@ def frequency_analysis():
 		intro.append(' and ')
 		intro.append(str(max_word_length))
 		intro.append(' characters in length.\n')
-		intro.append('Below are the words included in the current selection:\n')
+		if all_pos_tags_included:
+			intro.append('All parts-of-speech are included in the selection.\n')
+		else:
+			intro.append('Parts-of-speech included in the selection:\n')
+			for tag in pos_tags_included:
+				if pos_tags_included[tag]:
+					intro.append(tag)
+					intro.append(', ')
+			intro[len(intro) - 1] = '\n'# replace trailing comma with linebreak
+			intro.append('Parts-of-speech excluded from the selection:\n')
+			for tag in pos_tags_included:
+				if not pos_tags_included[tag]:
+					intro.append(tag)
+					intro.append(', ')
+			intro[len(intro) - 1] = '\n'# replace trailing comma with linebreak
+
+		intro.append('Below are the selected words, most frequent first:\n')
 		print(''.join(intro))
 		selected_words = fdist.most_common(num_words)
 		word_string = []
@@ -101,56 +133,77 @@ def frequency_analysis():
 			print('Enter P to restrict selection with part-of-speech tagging.')
 			print('Enter A to accept the current list of words and continue.')
 			user_input = input()
-			if user_input.lower() == 'l':
-				value_set = False
-				while not value_set:
-					new_value = input('\nEnter a new mimimum word length...\n')
-					if is_int(new_value):
-						min_word_length = int(new_value)
-						value_set = True
-						chosen = True
+			if user_input.lower()  == 'n':
+				num_words = int_input_prompt(
+								  '\nHow many words do you want selected?\n')
+				chosen = True
+			elif user_input.lower()  == 'm':
+				validated = False
+				while not validated:
+					min_word_length = int_input_prompt(
+									'\nEnter a new minimum word length...\n')
+					if min_word_length > max_word_length:
+						print("Minimum word length can't exceed maximum!")
 					else:
-						print('Please enter an integer.')
-			elif user_input.lower()  == 'n':
-				value_set = False
-				while not value_set:
-					new_value = input('\nEnter a new number of words...\n')
-					if is_int(new_value):
-						num_words = int(new_value)
-						value_set = True
-						chosen = True
+						validated = True
+				chosen = True
+			elif user_input.lower()  == 'x':
+				validated = False
+				while not validated:
+					max_word_length = int_input_prompt(
+									'\nEnter a new maximum word length...\n')
+					if min_word_length > max_word_length:
+						print("Maximum word length can't be less than minimum!")20
 					else:
-						print('Please enter an integer.')
+						validated = True
+				chosen = True
 			elif user_input.lower()  == 'p':
-				print("The parts-of-speech tagger is seldom 100% sucessful.")
-				print('Do you want to include untagged words?')
-				include_untagged = yes_no_input_prompt()
-				print('\nDo you want to include nouns?')
-				include_nouns = yes_no_input_prompt()
-				print('\nDo you want to include pronouns?')
-				include_pronouns = yes_no_input_prompt()
-				print('\nDo you want to include verbs?')
-				include_verbs = yes_no_input_prompt()
-				print('\nDo you want to include adverbs?')
-				include_adverbs = yes_no_input_prompt()
-				print('\nDo you want to include adjectives?')
-				include_adjectives = yes_no_input_prompt()
-				print('\nDo you want to include prepositions?')
-				include_prepositions = yes_no_input_prompt()
-				print('\nDo you want to include forms not listed above?')
-				include_others = yes_no_input_prompt()
+				nothing_selected = True
+				while nothing_selected:
+					for tag in pos_tags_included:
+						print('Do you want to include ' + tag + '?')
+						pos_tag_chosen = yes_no_input_prompt()
+						pos_tags_included[tag] = pos_tag_chosen
+						if pos_tag_chosen:
+							chosen = True
+						else:
+							all_pos_tags_included = False
+					if nothing_selected:
+						print('Error: you must include at least ' +
+									'one class of POS tags.')
+						print('Restarting selection...\n')
 					
 			elif user_input == 'A' or user_input == 'a':
 				chosen = True
 				committed = True
 			else:
 				print('Input not recognised')
+		
+		#Determining words to use in new FreqDist	
 		new_words = []
-		cleaned_words_tagged = unigram_tagger.tag(cleaned_words)
-		print(cleaned_words_tagged[1:20])
-		for w in cleaned_words:
-			if len(w) >= min_word_length:
+		working_words = []
+		
+		# Only choose words with POS tags
+		# matching the classes in pos_tags_included:
+		if not all_pos_tags_included:
+			for w in cleaned_words_tagged:
+				word_included = False
+				for tag in pos_tags_included:
+					if pos_tags_included[tag]:
+						for t in POS_TAGS[tag]:
+							if w[1] == t:
+								#print(w[0] + ' matches ' + str(w[1]))
+								working_words.append(w[0])
+								word_included = True
+				if not word_included:
+					if pos_tags_included['miscellaneous words']:
+						working_words.append(w[0])
+		else:
+			working_words = cleaned_words
+		for w in working_words:
+			if  min_word_length <= len(w) <= max_word_length:
 				new_words.append(w)
+	
 		fdist = FreqDist(new_words)
 
 # Dictionary of dictionaries defining command arguments accepted by snu-snu

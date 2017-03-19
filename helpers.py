@@ -22,3 +22,14 @@ def yes_no_input_prompt():
 			return False
 		else:
 			print('Input not recognised')
+
+def int_input_prompt(message):
+	value_set = False
+	while not value_set:
+		new_value = input(message)
+		if is_int(new_value):
+			return int(new_value)git co
+		else:
+			print('Please enter an integer.')
+			
+	
