@@ -2,6 +2,7 @@
 
 # Local:
 import authentication
+import browse_products
 from element_ids import *
 from helpers import is_int
 from errors import category_xpath_error
@@ -14,6 +15,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import TimeoutException
 
+
 def get_product_link(product_element):
     """Returns the link element inside a product listing element"""
     try:
@@ -24,7 +26,7 @@ def get_product_link(product_element):
         return None
 
 def go_home(browser):
-    try: 
+    try:
         logo_link = browser.find_element_by_id(NAV_LOGO_ID)
         logo_link.click()
     except NoSuchElementException:
@@ -32,21 +34,21 @@ def go_home(browser):
 
 def search(browser, search_term, category_index = 0):
     '''
-    Initiates a search in the main Amazon search field, with an optional 
+    Initiates a search in the main Amazon search field, with an optional
     argument specifiying a product category.
     Returns True if successful.
     '''
     use_custom_category = False
     if not category_index == 0:
         use_custom_category = True
-        try: 
+        try:
             cat_select = Select(browser.find_element_by_xpath(
                                           CAT_DROPDOWN_XPATH))
             cat_select.select_by_index(category_index)
         except NoSuchElementException:
             if category_xpath_error(): # returns bool based on user choice
                 use_custom_category = False
-            else:    
+            else:
                 return False
     try:
         search_field = browser.find_element_by_xpath(SEARCH_FIELD_XPATH)
@@ -55,7 +57,7 @@ def search(browser, search_term, category_index = 0):
         print('Aborting search...')
         return False
     search_field.send_keys(search_term)
-    try: 
+    try:
         submit_button = browser.find_element_by_xpath(SEARCH_SUBMIT_XPATH)
         submit_button.click()
     except NoSuchElementException:
@@ -65,7 +67,7 @@ def search(browser, search_term, category_index = 0):
 
 def choose_category(browser):
     '''
-    Provides a command-line interface for choosing a category from Amazon's 
+    Provides a command-line interface for choosing a category from Amazon's
     drop-down list. Returns the index of the chosen category.
     '''
     cat_index = 0
@@ -88,13 +90,14 @@ def choose_category(browser):
         if is_int(user_input) and 0 <= int(user_input) <= len(cat_options):
             cat_index = int(user_input);
             selected_cat_name = cat_names[cat_index]
+            cat_unselected = False
         else:
             print('Invalid category index!')
-            print('Please enter a number between 0 and ' 
+            print('Please enter a number between 0 and '
                                 + str(len(cat_options)))
     return cat_index
 
-def view_items(browser, search_string, number_products, category, 
+def view_items(browser, search_string, number_products, category,
                                             item_function = None):
     search(browser, search_string, category)
     current_result = 0
@@ -120,14 +123,38 @@ def view_items(browser, search_string, number_products, category,
         else:
             next_page_links = browser.find_elements_by_id(NEXT_PAGE_LINK_ID)
             if len(next_page_links) > 0:
-                next_page_text = browser.find_element_by_id(NEXT_PAGE_STRING_ID)
-                next_page_text.click()
-            else:
+                sucessful = False
                 try:
-                    browser.back()
                     next_page_text = browser.find_element_by_id(NEXT_PAGE_STRING_ID)
                     next_page_text.click()
+                    successful = True
                 except NoSuchElementException:
+                    print('Error: next page link not found.')
+                except ElementNotVisibleException:
+                    print('Error: next page link not visible.')
+                except WebDriverException:
+                    print('Unknown error in navigating to next result page.')
+                if not successful:
+                    try:
+                        next_page_arrow = browse.find_element_by_xpath(
+                                                    NEXT_PAGE_ARROW_XPATH)
+                        next_page_arrow.click()
+                        successful = True
+                    except NoSuchElementException:
+                        print('Error: next page arrow not found.')
+                    except ElementNotVisibleException:
+                        print('Error: next page arrow not visible.')
+                    except WebDriverException:
+                        print('Unknown error in navigating to next result page.')
+                if not successful:
+                    try:
+                        browser.get(next_page_links[0].get_attribute('href'))
+                        successful = True
+                    except WebDriverException:
+                        print('Error: failed to navigate to next result page')
+
+
+                if not successful:
                     end_string = ['End of results reached for search: "']
                     end_string.append(search_string)
                     end_string.append('". Only ')
@@ -137,13 +164,15 @@ def view_items(browser, search_string, number_products, category,
                     end_string.append(' products viewed.')
                     print(''.join(end_string))
                     completed = True
+
+
         current_result += 1
         if current_result > number_products:
             completed = True
-            
+
 
 def add_item_list(browser) :
-    try: 
+    try:
         list_add_button = browser.find_element_by_id(ADD_TO_LIST_BUTTON_ID)
         list_add_button.click()
     except NoSuchElementException:

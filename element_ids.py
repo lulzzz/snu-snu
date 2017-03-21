@@ -21,6 +21,11 @@ SEARCH_SUBMIT_XPATH = '//*[@id="nav-search"]/form/div[2]/div/input'
 PRODUCT_PAGE_LINK_CLASS = 's-access-detail-page'
 NEXT_PAGE_STRING_ID = 'pagnNextString'
 NEXT_PAGE_LINK_ID = 'pagnNextLink'
+NEXT_PAGE_ARROW_XPATH = '//*[@id="pagnNextLink"]/span[2]'
+
+PREVIOUS_PAGE_STRING_ID = 'pagnPrevString'
+PREVIOUS_PAGE_LINK_ID = 'pagnPrevLink'
+PREVIOUS_PAGE_ARROW_XPATH = '//*[@id="pagnPrevLink"]/span[1]'
 
 # Product page related
 ADD_TO_LIST_BUTTON_ID = 'add-to-wishlist-button-submit'

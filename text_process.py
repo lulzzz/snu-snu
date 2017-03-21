@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 
 # Local
+from element_ids import AMAZON_URL
 import data
+import browse_products
 from helpers import yes_no_input_prompt
 from helpers import int_input_prompt
 
@@ -10,6 +12,7 @@ import sys
 import pickle
 import nltk
 import string
+from selenium import webdriver
 from nltk.probability import FreqDist 
 from nltk import tokenize
 from nltk.corpus import stopwords
@@ -153,7 +156,7 @@ def frequency_analysis():
 					max_word_length = int_input_prompt(
 									'\nEnter a new maximum word length...\n')
 					if min_word_length > max_word_length:
-						print("Maximum word length can't be less than minimum!")20
+						print("Maximum word length can't be less than minimum!")
 					else:
 						validated = True
 				chosen = True
@@ -166,6 +169,7 @@ def frequency_analysis():
 						pos_tags_included[tag] = pos_tag_chosen
 						if pos_tag_chosen:
 							chosen = True
+							nothing_selected = False
 						else:
 							all_pos_tags_included = False
 					if nothing_selected:
@@ -205,7 +209,48 @@ def frequency_analysis():
 				new_words.append(w)
 	
 		fdist = FreqDist(new_words)
-
+	print('The program will now make snu-snu commands from your selected words.')
+	print('What action would you like snu-snu to perform with your words?')
+	for a in data.product_actions:
+		print('Enter ' + str(a) + ' below to ' + data.product_actions[a] + '.')
+		
+	selected_product_action = 0
+	validated = False
+	while not validated:
+		selected_product_action = int_input_prompt('Please enter a number ' 
+						+ 'between 0 and ' + str(len(data.product_actions) - 1)
+						+ '...\n')
+		if 0 <= selected_product_action < len(data.product_actions):
+			validated = True
+	number_of_itmes = 1
+	if not selected_product_action == 0: # this is known to be search
+		validated  = False
+		while not validated:
+			number_of_items = int_input_prompt('How many items do you want '
+								+ 'the action to be carried out on?\n')
+			if number_of_items < 0:
+				print("Input error: there can't be a negative number of items.")
+			else:
+				validated = True
+	print('You will now be asked to select a category in which to search...')
+	browser = webdriver.Chrome()
+	browser.get(AMAZON_URL)
+	product_category = browse_products.choose_category(browser)
+	
+	generated_commands = []
+	for w in selected_words:
+		generated_commands.append(data.ProductCommand(
+								'NLP generated command',
+								data.product_actions[selected_product_action],
+								data.ProductAction(selected_product_action),
+								product_category,
+								w[0],
+								number_of_items))
+	data.product_commands_to_file(generated_commands, sys.argv[3])
+	print('Commands sucessfully saved to ' + sys.argv[3])
+	quit()
+	
+	
 # Dictionary of dictionaries defining command arguments accepted by snu-snu
 ARGS = {'freq': 
 	{'description' : 'derives commands from a text based on frequency analysis',

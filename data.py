@@ -11,6 +11,11 @@ class ProductAction(Enum):
 	view = 1
 	add_shopping_list = 2
 	
+# Dictionary used in text_process user interface
+product_actions = {	0 : 'search for products',
+					1 : 'view products',
+					2 : 'add products to shopping list'}
+	
 class Command():
 	'''Used as a parent class for all commands and
 		to represent generic descriptions of commands'''

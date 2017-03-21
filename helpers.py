@@ -28,7 +28,7 @@ def int_input_prompt(message):
 	while not value_set:
 		new_value = input(message)
 		if is_int(new_value):
-			return int(new_value)git co
+			return int(new_value)
 		else:
 			print('Please enter an integer.')
 			
