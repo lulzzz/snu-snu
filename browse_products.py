@@ -106,7 +106,7 @@ def view_items(browser, search_string, number_products, category,
         product_elements = browser.find_elements_by_id(
                             'result_' + str(current_result))
         if(len(product_elements) > 0):
-            product_link = get_product_link(product_elements[0])
+            product_link = get_product_link(product_elements[p0])
             if not product_link == None:
                 try:
                     product_link.click()

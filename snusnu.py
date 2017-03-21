@@ -162,15 +162,8 @@ def run(browser):
 			category_number = browse_products.choose_category(browser)
 			number_of_products = 0
 			if not selected_command.name == 'search':
-				print('How many products should the command be executed on?')
-				valid_int = False
-				while not valid_int:
-					product_count = (input())
-					if is_int(product_count):
-						number_of_products = int(product_count)
-						valid_int = True
-					else:
-						print("That wasn't a valid integer. Please re-enter...")
+				number_of_products = int_input_prompt('How many products should'
+										+	' the command be executed on?\n')
 
 			full_command = data.ProductCommand(selected_command.name,
 										selected_command.description,
