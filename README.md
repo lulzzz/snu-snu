@@ -5,7 +5,7 @@ A tool for 'training' the recommendation algorithm used by an online retail gian
     1. Through interactive command line interface.
     1. Through JSON list of ProductCommand objects.
 1. Generate JSON lists of ProductCommand objects based on NLP of arbitrary texts.
-1. Serialise reccomended products from all sources for later analysis.
+1. Serialise recommended products from all sources for later analysis.
 
 ##### Dependancies:
 - NLTK
