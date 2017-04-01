@@ -1,3 +1,5 @@
+import re
+
 def is_int(value):
     try:
         int(value)
@@ -32,4 +34,19 @@ def int_input_prompt(message):
 		else:
 			print('Please enter an integer.')
 			
-	
+def keep_strings_matching(string_list, patterns):
+	''' Takes a list of strings and a list of regex patterns.
+		returns only those strings that match at least one regex'''
+	regex_patterns = []
+	for p in patterns:
+		regex_patterns.append(re.compile(p))
+	matched_strings = []
+	for s in string_list:
+		matched = False
+		pattern_index = 0
+		while not matched and pattern_index < len(regex_patterns):
+			if regex_patterns[pattern_index].search(s) != None:
+				matched_strings.append(s)
+				matched = True
+			pattern_index += 1
+	return matched_strings

@@ -9,7 +9,6 @@ from helpers import int_input_prompt
 
 # External
 import sys
-import pickle
 import nltk
 import string
 from selenium import webdriver
@@ -40,8 +39,9 @@ POS_TAGS = {'nouns':['NP', 'NX', 'NN', 'NNS', 'NNP', 'NNPS'],
 			'adjectives' : ['ADJP', ' WHADJP', 'JJ', 'JJR', 'JJS'],
 			'prepositions' : ['PP', 'WHPP', 'IN'],
 			'untagged words' : [None],
-			'miscellaneous words' : []}# The inclusion of 'other words' is an inelegant 
-							   # side-effect of an otherwise elegant solution
+			'miscellaneous words' : []}	# The inclusion of 'misc words' is an 
+										# inelegant side-effect of an otherwise 
+										# elegant solution
 def frequency_analysis():
 	"""
 	Performs simple frequency analysis with options for 

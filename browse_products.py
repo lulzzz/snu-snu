@@ -123,7 +123,7 @@ def view_items(browser, search_string, number_products, category,
         else:
             next_page_links = browser.find_elements_by_id(NEXT_PAGE_LINK_ID)
             if len(next_page_links) > 0:
-                sucessful = False
+                successful = False
                 try:
                     next_page_text = browser.find_element_by_id(NEXT_PAGE_STRING_ID)
                     next_page_text.click()

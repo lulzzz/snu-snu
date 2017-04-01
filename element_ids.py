@@ -17,7 +17,7 @@ CAT_DROPDOWN_XPATH = '//*[@id="searchDropdownBox"]'
 SEARCH_FIELD_XPATH = '//*[@id="twotabsearchtextbox"]'
 SEARCH_SUBMIT_XPATH = '//*[@id="nav-search"]/form/div[2]/div/input'
 
-# Product-list related
+# Product-list related:
 PRODUCT_PAGE_LINK_CLASS = 's-access-detail-page'
 NEXT_PAGE_STRING_ID = 'pagnNextString'
 NEXT_PAGE_LINK_ID = 'pagnNextLink'
@@ -27,5 +27,16 @@ PREVIOUS_PAGE_STRING_ID = 'pagnPrevString'
 PREVIOUS_PAGE_LINK_ID = 'pagnPrevLink'
 PREVIOUS_PAGE_ARROW_XPATH = '//*[@id="pagnPrevLink"]/span[1]'
 
-# Product page related
+# Product page related:
 ADD_TO_LIST_BUTTON_ID = 'add-to-wishlist-button-submit'
+
+# Recommendation list related:
+NAV_YOUR_AMAZON_ID = 'nav-your-amazon'
+NAV_RECOMMENDED_FOR_YOU_XPATH = '//*[@id="nav-subnav"]/a[3]'
+MENU_YOUR_RECOMMENDATIONS_XPATH = '//*[@id="nav-flyout-yourAccount"]/div[2]/a[4]'
+PARTIAL_PRODUCT_NAME_XPATH = '//*[contains(@id,"ysProdLink")]'
+PARTIAL_PRODUCT_IMAGE_XPATH = '//*[contains(@id,"ysProdImage")]'
+PRICE_SPAN_CLASS = 'price'
+MORE_RESULTS_BUTTON_ID = 'ysMoreResults'
+MORE_RESULTS_LINK_XPATH = '//*[@id="main-body"]/table/tbody/tr/td[2]/div[1]/table[2]/tbody/tr[1]/td/table/tbody/tr/td[2]/span/a[2]'
+PREVIOUS_RESULTS_BOTTON_ID = 'ysPrevResults'
