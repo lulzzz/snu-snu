@@ -6,6 +6,7 @@ import data
 import browse_products
 from helpers import yes_no_input_prompt
 from helpers import int_input_prompt
+from helpers import output_command_arguments
 
 # External
 import sys
@@ -294,19 +295,13 @@ from arbitrary texts using NLP.\n""")
 			output_command_arguments()
 	else:
 		print('Error: text-process requires terminal arguments to run.\n')
-		output_command_arguments()
+		output_command_arguments(ARGS)
 	if proceed_with_args:
 		ARGS[sys.argv[1]]['function']()
 	else: 
 		print('Quitting...')
 		quit()
 
-def output_command_arguments():
-	print('These are the recognised command arguments:')
-	print(' {0:10}{1}'.format('NAME', 'DESCRIPTION'))
-	for a in ARGS.keys():
-		print(' {0:10}{1}'.format(a, ARGS[a]['description']))
-		print('   Required arguments:')
-		print(ARGS[a]['required args'] + '\n')
+
 
 initialise()

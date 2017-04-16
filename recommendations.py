@@ -69,9 +69,11 @@ def get_recommendations(browser, number_of_recommendations):
 		names_text = []
 		for n in names:
 			names_text.append(n.get_attribute('innerHTML'))
+		names_text_stripped = []
 		for n in names_text:
-			n = n.replace('<strong>', '')
-			n = n.replace('</strong>', '')
+			name = n.replace('<strong>', '')
+			name = name.replace('</strong>', '')
+			names_text_stripped.append(name)
 			print(n)
 		images = browser.find_elements_by_xpath(PARTIAL_PRODUCT_IMAGE_XPATH)
 		image_urls = []
@@ -91,13 +93,21 @@ def get_recommendations(browser, number_of_recommendations):
 		prices_text = keep_strings_matching(prices_text, ['<b>', '</b>'])
 		print('Product price elements have been reduced in number to ' 
 											+ str(len(prices_text)))
+		prices_text_stripped = []
 		for p in prices_text:
-			p = p.replace('<b>', '')
-			p = p.replace('</b>', '')
-			print(p)
-		scraped_names.append(names_text)
-		scraped_images.append(image_data)
-		scraped_prices.append(prices_text)
+			price = p.replace('<b>', '')
+			price = price.replace('</b>', '')
+			price_list = list(price)
+			price_list[0] = '£'
+			price = ''.join(price_list)
+			prices_text_stripped.append(price)
+			print(price)
+		for n in names_text_stripped:
+			scraped_names.append(n)
+		for i in image_data:
+			scraped_images.append(i)
+		for p in prices_text_stripped:
+			scraped_prices.append(p)
 		recommendations_scraped += len(names)
 		# Navigate to next page of recommendations
 		successful = False	
@@ -127,10 +137,10 @@ def get_recommendations(browser, number_of_recommendations):
 				except WebDriverException:
 					print('Error clicking element based on alternative xpath')
 		if not successful:
-			
+			print('Failed to get recommendations!') # <<< REVISIT THIS CODE
 
 	recommended_products = []
-	for i in range(len(number_of_recommendations)):
+	for i in range(number_of_recommendations):
 		recommended_products.append(data.ProductDescription(scraped_names[i],
 															scraped_prices[i],
 															scraped_images[i]))
@@ -139,7 +149,7 @@ def get_recommendations(browser, number_of_recommendations):
 def test():
 	browser = webdriver.Chrome()
 	authentication.sign_in(browser, 'cool.s.dedalus@yandex.com', '64M[gzXBe"~R*%-')
-	recommendations = get_recommendations(browser, 500)
+	recommendations = get_recommendations(browser, 120)
 	data.product_descriptions_to_file(recommendations, 'joyce_recommendations.json')
 	
 test()

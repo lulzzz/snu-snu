@@ -50,3 +50,11 @@ def keep_strings_matching(string_list, patterns):
 				matched = True
 			pattern_index += 1
 	return matched_strings
+
+def output_command_arguments(arg_descriptions):
+	print('These are the recognised command arguments:')
+	print(' {0:10}{1}'.format('NAME', 'DESCRIPTION'))
+	for a in arg_descriptions.keys():
+		print(' {0:10}{1}'.format(a, arg_descriptions[a]['description']))
+		print('   Required arguments:')
+		print(arg_descriptions[a]['required args'] + '\n')
