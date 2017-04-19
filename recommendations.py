@@ -148,7 +148,7 @@ def get_recommendations(browser, number_of_recommendations):
 	
 def test():
 	browser = webdriver.Chrome()
-	authentication.sign_in(browser, 'cool.s.dedalus@yandex.com', '64M[gzXBe"~R*%-')
+	authentication.sign_in(browser, 'cool.s.dedalus@yandex.com', "DON'T COMMIT PWs YOU FOOL!")
 	recommendations = get_recommendations(browser, 120)
 	data.product_descriptions_to_file(recommendations, 'joyce_recommendations.json')
 	
