@@ -135,7 +135,7 @@ def base_64_gif_from_web(url, file_suffix = ''):
     img.save(temp_file_path, 'gif')
     image_byt = open(temp_file_path, 'rb')
     image_b64 = base64.encodestring(image_byt.read())
-    return image_b64.decode('ascii') # utf-8 string decode
+    return image_b64.decode('ascii') # ascii string decode
 
 def base_64_gif_to_file(img_data, path):
     img_bytes = bytes(img_data, 'utf-8')
