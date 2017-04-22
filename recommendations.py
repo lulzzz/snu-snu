@@ -63,18 +63,21 @@ def get_recommendations(browser, number_of_recommendations):
 	scraped_images = []
 	scraped_prices = []
 	recommendations_scraped = 0
-	while recommendations_scraped < number_of_recommendations:
+	while recommendations_scraped < (number_of_recommendations + 1): #precaution
 		names = browser.find_elements_by_xpath(PARTIAL_PRODUCT_NAME_XPATH)
 		print ('Selenium found ' + str(len(names)) + ' product name elements')
 		names_text = []
 		for n in names:
 			names_text.append(n.get_attribute('innerHTML'))
 		names_text_stripped = []
+		i = 0
 		for n in names_text:
+			print('Product '  + str(i) + ' name: ' + n)
 			name = n.replace('<strong>', '')
 			name = name.replace('</strong>', '')
 			names_text_stripped.append(name)
-			print(n)
+			print('Stripping HTML...\n' + name)
+			i += 1
 		images = browser.find_elements_by_xpath(PARTIAL_PRODUCT_IMAGE_XPATH)
 		image_urls = []
 		for i in images:
@@ -83,6 +86,12 @@ def get_recommendations(browser, number_of_recommendations):
 		i = 0
 		for u in image_urls:
 			image_data.append(data.base_64_gif_from_web(u))
+			image_message = ['Base64 encoded GIF of image for ']
+			image_message.append(names_text_stripped[i])
+			image_message.append('\n')
+			image_message.append(image_data[i][0:220])
+			image_message.append('...')
+			print(''.join(image_message))
 			i += 1
 		print ('Selenium found ' + str(len(images)) + ' product image elements')
 		prices = browser.find_elements_by_class_name(PRICE_SPAN_CLASS)
@@ -94,14 +103,16 @@ def get_recommendations(browser, number_of_recommendations):
 		print('Product price elements have been reduced in number to ' 
 											+ str(len(prices_text)))
 		prices_text_stripped = []
+		i = 0
 		for p in prices_text:
+			print('Product ' + str(i) + ' price: ' + p)
 			price = p.replace('<b>', '')
 			price = price.replace('</b>', '')
 			price_list = list(price)
 			price_list[0] = '£'
 			price = ''.join(price_list)
 			prices_text_stripped.append(price)
-			print(price)
+			print('Stripping HTML...\n' + price)
 		for n in names_text_stripped:
 			scraped_names.append(n)
 		for i in image_data:
@@ -130,7 +141,7 @@ def get_recommendations(browser, number_of_recommendations):
 				try:
 					print('Possible error finding "more results" link. '
 							+ 'Trying alternative xpath...')
-					more_results_link = browser.find_element.by.xpath(
+					more_results_link = browser.find_element_by_xpath(
 													MORE_RESULTS_LINK_XPATH)
 					more_results_link.click()
 					successful = True
@@ -148,8 +159,8 @@ def get_recommendations(browser, number_of_recommendations):
 	
 def test():
 	browser = webdriver.Chrome()
-	authentication.sign_in(browser, 'cool.s.dedalus@yandex.com', "DON'T COMMIT PWs YOU FOOL!")
-	recommendations = get_recommendations(browser, 120)
-	data.product_descriptions_to_file(recommendations, 'joyce_recommendations.json')
+	authentication.sign_in(browser, 'super.d-j-trump2018@yandex.com', "9v4wulgocP1D84E")
+	recommendations = get_recommendations(browser, 240)
+	data.product_descriptions_to_file(recommendations, 'trump_reccomendations.json')
 	
 test()

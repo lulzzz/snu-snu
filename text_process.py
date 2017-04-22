@@ -289,10 +289,10 @@ from arbitrary texts using NLP.\n""")
 				error.append(' arguments.')
 				print(''.join(error))
 				print('See "' + sys.argv[1] + '" in the below list...\n')
-				output_command_arguments()
+				output_command_arguments(ARGS)
 		else:
 			print('Command argument "' + sys.argv[1] + '" not recognised\n')
-			output_command_arguments()
+			output_command_arguments(ARGS)
 	else:
 		print('Error: text-process requires terminal arguments to run.\n')
 		output_command_arguments(ARGS)

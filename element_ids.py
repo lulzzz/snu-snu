@@ -30,6 +30,13 @@ PREVIOUS_PAGE_ARROW_XPATH = '//*[@id="pagnPrevLink"]/span[1]'
 # Product page related:
 ADD_TO_LIST_BUTTON_ID = 'add-to-wishlist-button-submit'
 
+# Wishlists related
+WISHLISTS_LINK_ID = 'nav-link-wishlist'
+WISHLISTS_MENU_LINK_XPATH = '//*[@id="nav-flyout-yourAccount"]/div[2]/a[3]'
+WISHLISTS_SETTINGS_LINK_XPATH = '//*[@id="wishlist-page"]/ul/div/a[2]'
+WISHLISTS_SHOPPING_DEFAULT_SELECT_XPATH = '//*[@id="g-manage-table-wishlist"]/tbody/tr[2]/td[2]/div/label'
+WISHLISTS_SETTINGS_SUMBIT_BUTTON_XPATH = '//*[@id="g-manage-form"]/div[2]/span/span/span/input'
+
 # Recommendation list related:
 NAV_YOUR_AMAZON_ID = 'nav-your-amazon'
 NAV_RECOMMENDED_FOR_YOU_XPATH = '//*[@id="nav-subnav"]/a[3]'

@@ -15,6 +15,10 @@ from selenium import webdriver
 import getpass
 from enum import Enum
 
+
+ATTEMPTED_SET_DEFAULT_LIST = False
+print('Default list flag has been set. Its value is: ' + str(ATTEMPTED_SET_DEFAULT_LIST))
+
 COMMANDS = [data.Command('search',
 			'Carry out a single product search.',
 			data.ProductAction.search),
@@ -202,6 +206,17 @@ def execute_commands(browser, command_list):
 				error_has_occured = True
 
 		elif c.associated_action == data.ProductAction.add_shopping_list:
+			global ATTEMPTED_SET_DEFAULT_LIST
+			if not ATTEMPTED_SET_DEFAULT_LIST:
+				print("It is possble that the default list is not set.")
+				print('Attempting to set default list to "Shopping list"...')
+				if browse_products.set_shopping_list_default(browser):
+					print('"Shopping list" either already default ' +
+									'or succesfully set to default.')
+				else:
+					print('Failed to set "Shopping list" to default!')
+					print('It may be necessary to set it manaully.')
+				ATTEMPTED_SET_DEFAULT_LIST = True
 			if not browse_products.view_items(browser,
 										c.search_string,
 										c.number_of_items,
