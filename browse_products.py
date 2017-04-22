@@ -39,7 +39,7 @@ def search(browser, search_term, category_index = 0):
     argument specifiying a product category.
     Returns True if successful.
     '''
-    print('Searching for "' + search_term + '".')
+    print('Searching for "' + search_term + '"...')
     use_custom_category = False
     if not category_index == 0:
         use_custom_category = True
@@ -150,6 +150,8 @@ def set_shopping_list_default(browser):
 
     print('Trying to select "Shopping list" as default...')
     try:
+		
+        # MAY NEED TO ASK SELENIUM TO WAIT UNTIL SELECT IS VISIBLE
         shopping_list_default_select = browser.find_element_by_xpath(
                             WISHLISTS_SHOPPING_DEFAULT_SELECT_XPATH)
         shopping_list_default_select.click()
