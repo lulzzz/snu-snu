@@ -14,6 +14,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import WebDriverException
 
 
 def get_product_link(product_element):
@@ -38,6 +39,7 @@ def search(browser, search_term, category_index = 0):
     argument specifiying a product category.
     Returns True if successful.
     '''
+    print('Searching for "' + search_term + '".')
     use_custom_category = False
     if not category_index == 0:
         use_custom_category = True
@@ -97,9 +99,91 @@ def choose_category(browser):
                                 + str(len(cat_options)))
     return cat_index
 
+def set_shopping_list_default(browser):
+    print('Attempting to navigate to "Lists"...')
+    successful = False
+    try:
+        lists_link_button = browser.find_element_by_id(WISHLISTS_LINK_ID)
+        lists_link_button.click()
+        successful = True
+        print('Success!')
+    except NoSuchElementException:
+        print('Error: no "lists" link element found matching stored ID.')
+    except ElementNotVisibleException:
+        print('Error: "Lists" link identified by stored ID not visible.')
+        print('Trying getting the link directly...')
+        try:
+            browser.get(lists_link_button.get_attribute('href'))
+            successful = True
+            print('Success!')
+        except WebDriverException:
+            print('Error failed to navigate to "Lists" page.')
+    if not successful:
+        try:
+            print('Trying to get the "lists" link from the menu...' )
+            lists_menu_link = browser.find_element_by_xpath(
+                                    WISHLISTS_MENU_LINK_XPATH)
+            browser.get(lists_menu_link.get_attribute('href'))
+            print('Success!')
+        except NoSuchElementException:
+            print('Error: no "lists" link element found matching stored XPATH.')
+            return False
+        except WebDriverException:
+            print('Error failed to navigate to "Lists" page.')
+            return False
+
+    print('Trying to open "Lists" settings...')
+    try:
+        settings_link = browser.find_element_by_xpath(
+                        WISHLISTS_SETTINGS_LINK_XPATH)
+        settings_link.click()
+        print('Success!')
+    except NoSuchElementException:
+        print('Error: No "Lists" settings button found matching stored XPATH.')
+        return False
+    except ElementNotVisibleException:
+        print('Error: "Lists" settings button not visible.')
+        return False
+    except WebDriverException:
+        print('Unknown error in finding or clicking "Lists" settings button.')
+        return False
+
+    print('Trying to select "Shopping list" as default...')
+    try:
+        shopping_list_default_select = browser.find_element_by_xpath(
+                            WISHLISTS_SHOPPING_DEFAULT_SELECT_XPATH)
+        shopping_list_default_select.click()
+        print('Success!')
+    except NoSuchElementException:
+        print('Error: No "Shopping list" select found matching stored XPATH.')
+        return False
+    except ElementNotVisibleException:
+        print('Error: "Shopping list" select not visible.')
+        return False
+    except WebDriverException:
+        print('Unknown error in finding or clicking "Shopping list" select.')
+        return False
+
+    print('Trying to submit chanes to settings...')
+    try:
+        settings_submit_button = browser.find_element_by_xpath(
+                            WISHLISTS_SETTINGS_SUMBIT_BUTTON_XPATH)
+        settings_submit_button.click()
+        print('Success!')
+    except NoSuchElementException:
+        print('Error: No "submit" button found matching stored XPATH.')
+        return False
+    except ElementNotVisibleException:
+        print('Error: "submit" button not visible.')
+        return False
+    except WebDriverException:
+        print('Unknown error in finding or clicking "submit" button.')
+        return False
+    return True
+    
 def view_items(browser, search_string, number_products, category,
                                             item_function = None):
-    search(browser, search_string, category)
+    search(browser, search_string, category)            
     current_result = 0
     completed = False
     while not completed:
@@ -172,6 +256,7 @@ def view_items(browser, search_string, number_products, category,
 
 
 def add_item_list(browser) :
+    # NEEDS CODE TO TEST IF DEFAULT LIST HAS BEEN CHOSEN AND SELECT SHOPPING LIST
     try:
         list_add_button = browser.find_element_by_id(ADD_TO_LIST_BUTTON_ID)
         list_add_button.click()
@@ -184,5 +269,5 @@ def add_item_list(browser) :
 
 # TEST CODE
 '''browser = webdriver.Chrome()
-authentication.sign_in(browser, 'louis.kerley@yandex.com', 'rJUirp8qB64kD7Qs')
+authentication.sign_in(browser, 'louis.kerley@yandex.com', 'partes honteuse')
 view_items(browser, 'fuck', 160, 40)'''
