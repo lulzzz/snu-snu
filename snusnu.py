@@ -7,6 +7,7 @@ import data
 import browse_products
 from helpers import is_int
 from helpers import yes_no_input_prompt
+from helpers import int_input_prompt
 
 # External:
 import sys
