@@ -1,5 +1,5 @@
 # Local
-import errors
+import snusnu.errors as errors
 
 # External
 import json

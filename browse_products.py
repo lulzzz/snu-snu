@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 
 # Local:
-import authentication
-import browse_products
-from element_ids import *
-from helpers import is_int
-from errors import category_xpath_error
+import snusnu.authentication as authentication
+from snusnu.element_ids import *
+from snusnu.helpers import is_int
+from snusnu.errors import category_xpath_error
 
 # External:
 from selenium import webdriver
@@ -100,6 +99,10 @@ def choose_category(browser):
     return cat_index
 
 def set_shopping_list_default(browser):
+    """
+    WARNING: Not functional. Intended to set default wishlist 
+    to "shopping list" from 
+    """
     print('Attempting to navigate to "Lists"...')
     successful = False
     try:
@@ -150,7 +153,7 @@ def set_shopping_list_default(browser):
 
     print('Trying to select "Shopping list" as default...')
     try:
-		
+        
         # MAY NEED TO ASK SELENIUM TO WAIT UNTIL SELECT IS VISIBLE
         shopping_list_default_select = browser.find_element_by_xpath(
                             WISHLISTS_SHOPPING_DEFAULT_SELECT_XPATH)
@@ -258,7 +261,8 @@ def view_items(browser, search_string, number_products, category,
 
 
 def add_item_list(browser) :
-    # NEEDS CODE TO TEST IF DEFAULT LIST HAS BEEN CHOSEN AND SELECT SHOPPING LIST
+    # NEEDS CODE TO TEST IF DEFAULT LIST HAS BEEN CHOSEN 
+    # AND SELECT SHOPPING LIST IF NEEDED
     try:
         list_add_button = browser.find_element_by_id(ADD_TO_LIST_BUTTON_ID)
         list_add_button.click()
@@ -269,7 +273,3 @@ def add_item_list(browser) :
         print('Failed to add item to list. List add button is not visible.')
 
 
-# TEST CODE
-'''browser = webdriver.Chrome()
-authentication.sign_in(browser, 'louis.kerley@yandex.com', 'partes honteuse')
-view_items(browser, 'fuck', 160, 40)'''

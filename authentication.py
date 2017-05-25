@@ -1,5 +1,5 @@
 # Local:
-from element_ids import *
+from snusnu.element_ids import *
 
 # External:
 from selenium import webdriver

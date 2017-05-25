@@ -1,8 +1,8 @@
 # Local
-from element_ids import *
-from helpers import keep_strings_matching
-import data
-import authentication
+from snusnu.element_ids import *
+from snusnu.helpers import keep_strings_matching
+import snusnu.data as data
+import snusnu.authentication as authentication
 
 # External
 from selenium.common.exceptions import NoSuchElementException
@@ -159,8 +159,8 @@ def get_recommendations(browser, number_of_recommendations):
 	
 def test():
 	browser = webdriver.Chrome()
-	authentication.sign_in(browser, 'super.d-j-trump2018@yandex.com', "9v4wulgocP1D84E")
-	recommendations = get_recommendations(browser, 240)
-	data.product_descriptions_to_file(recommendations, 'trump_reccomendations.json')
+	authentication.sign_in(browser, 'adolph.hitler2018@yandex.com', "###")
+	recommendations = get_recommendations(browser, 120)
+	data.product_descriptions_to_file(recommendations, 'ballard_crash_reccomendations.json')
 	
 test()

@@ -1,6 +1,6 @@
 # Local
-from helpers import output_command_arguments
-import data
+from snusnu.helpers import output_command_arguments
+import snusnu.data as data
 
 # External
 import sys

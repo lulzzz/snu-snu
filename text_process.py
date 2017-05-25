@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
 # Local
-from element_ids import AMAZON_URL
-import data
-import browse_products
-from helpers import yes_no_input_prompt
-from helpers import int_input_prompt
-from helpers import output_command_arguments
+from snusnu.element_ids import AMAZON_URL
+import snusnu.data as data
+import snusnu.browse_products as browse_products
+from snusnu.helpers import yes_no_input_prompt, int_input_prompt
+from snusnu.helpers import output_command_arguments
 
 # External
 import sys
@@ -301,7 +300,5 @@ from arbitrary texts using NLP.\n""")
 	else: 
 		print('Quitting...')
 		quit()
-
-
 
 initialise()

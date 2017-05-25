@@ -1,4 +1,4 @@
-from element_ids import *
+from snusnu.element_ids import *
 
 def category_xpath_error():
     '''
