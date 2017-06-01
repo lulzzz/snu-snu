@@ -1,14 +1,19 @@
-{
-  "books":
-  {
-    "Fiction" : {}
-    "Children's books": {}
-    "Crime, Thrillers & Mystery": {}
-    "Biographies & Memoirs": {}
-    "Romance": {}
-    "Food and Drink": {}
-    "History": {}
-    "Young Adult": {}
-  }
-  ""  
+{"Beauty":
+	{
+	"Fragrance"
+	"Sun Care and Tanning"	
+	}
+	
+"books":
+	{
+	"Fiction" : {}
+	"Children's books": {}
+	"Crime, Thrillers & Mystery": {}
+	"Biographies & Memoirs": {}
+	"Romance": {}
+	"Food and Drink": {}
+	"History": {}
+	"Young Adult": {}
+	},
+	
 } 
