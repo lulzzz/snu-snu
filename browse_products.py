@@ -65,7 +65,6 @@ def search(browser, search_term, category_index = 0):
         search_field.send_keys(keys.ENTER)
     return True
 
-
 def choose_category(browser):
     '''
     Provides a command-line interface for choosing a category from Amazon's
@@ -100,8 +99,8 @@ def choose_category(browser):
 
 def set_shopping_list_default(browser):
     """
-    WARNING: Not functional. Intended to set default wishlist 
-    to "shopping list" from 
+    WARNING: Not functional. Intended to set default wishlist
+    to "shopping list" from
     """
     print('Attempting to navigate to "Lists"...')
     successful = False
@@ -153,7 +152,7 @@ def set_shopping_list_default(browser):
 
     print('Trying to select "Shopping list" as default...')
     try:
-        
+
         # MAY NEED TO ASK SELENIUM TO WAIT UNTIL SELECT IS VISIBLE
         shopping_list_default_select = browser.find_element_by_xpath(
                             WISHLISTS_SHOPPING_DEFAULT_SELECT_XPATH)
@@ -185,30 +184,38 @@ def set_shopping_list_default(browser):
         print('Unknown error in finding or clicking "submit" button.')
         return False
     return True
-    
+
 def view_items(browser, search_string, number_products, category,
                                             item_function = None):
-    search(browser, search_string, category)            
+    search(browser, search_string, category)
+    browser.set_page_load_timeout(30)
     current_result = 0
     completed = False
     while not completed:
         product_elements = browser.find_elements_by_id(
                             'result_' + str(current_result))
+        # Is there a product element
+        # matching the desired on the page?
         if(len(product_elements) > 0):
-            product_link = get_product_link(product_elements[0])
-            if not product_link == None:
-                try:
-                    product_link.click()
-                except:
-                    print('Could not click product element. Manually getting link.')
-                    browser.get(product_link.get_attribute('href'))
-                # If present, call a function to do something on the product page
-                if not item_function == None:
+            product_page_url = browser.current_url
+            try:
+                product_link = get_product_link(product_elements[0])
+                if not product_link == None:
                     try:
+                        product_link.click()
+                    except:
+                        print('Could not click product element. ' +
+                                        ' Manually getting link.')
+                        browser.get(product_link.get_attribute('href'))
+                    # If present, call a function to
+                    # do something on the product page
+                    if not item_function == None:
                         item_function(browser)
-                    except TimeoutException:
-                        print('Failed to add item to list. Item page timed out')
-                browser.back()
+                    browser.get(product_page_url) # possibly more robust
+                                                  # than browser.back()
+            except TimeoutException:
+                print('Item page timed out. ' +
+                        'Returning to product page...')
         else:
             next_page_links = browser.find_elements_by_id(NEXT_PAGE_LINK_ID)
             if len(next_page_links) > 0:
@@ -253,15 +260,13 @@ def view_items(browser, search_string, number_products, category,
                     end_string.append(' products viewed.')
                     print(''.join(end_string))
                     completed = True
-
-
         current_result += 1
         if current_result > number_products:
             completed = True
 
 
 def add_item_list(browser) :
-    # NEEDS CODE TO TEST IF DEFAULT LIST HAS BEEN CHOSEN 
+    # NEEDS CODE TO TEST IF DEFAULT LIST HAS BEEN CHOSEN
     # AND SELECT SHOPPING LIST IF NEEDED
     try:
         list_add_button = browser.find_element_by_id(ADD_TO_LIST_BUTTON_ID)
@@ -271,5 +276,3 @@ def add_item_list(browser) :
                 + 'stored element ids.')
     except ElementNotVisibleException:
         print('Failed to add item to list. List add button is not visible.')
-
-
