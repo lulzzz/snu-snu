@@ -77,7 +77,7 @@ setup(
 				'snusnu.terminal',
 				'snusnu.browse_products',
 				'snusnu.errors',
-				'snusnu.text_process.py',
+				'snusnu.text_process',
 				'snusnu.data',
 				'snusnu.headless',
 				'snusnu.present_recommendations'],
