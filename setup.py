@@ -69,7 +69,18 @@ setup(
 
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
-    py_modules=["authentication, headless"],
+    py_modules=['snusnu',
+				'snusnu.authentication',
+				'snusnu.element_ids',
+				'snusnu.helpers',
+				'snusnu.recommendations',
+				'snusnu.terminal',
+				'snusnu.browse_products',
+				'snusnu.errors',
+				'snusnu.text_process.py',
+				'snusnu.data',
+				'snusnu.headless',
+				'snusnu.present_recommendations'],
 
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's
