@@ -65,7 +65,7 @@ setup(
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=['snusnu'], # Unsure if anything needs to be excluded
+    package_dir={'snusnu' : ''}, # Unsure if anything needs to be excluded
 
     # Alternatively, if you want to distribute just a my_module.py, uncomment
     # this:
