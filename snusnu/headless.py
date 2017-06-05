@@ -93,7 +93,7 @@ USER_AGENTS = {
 "Safari 9.1 MacOSX" : "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_9_5) AppleWebKit/601.7.8 (KHTML, like Gecko) Version/9.1.3 Safari/537.86.7"
 }
 
-def get_browser(user_agent = USER_AGENTS['Chrome 57.0 Win10'],
+def get_driver(user_agent = USER_AGENTS['Chrome 57.0 Win10'],
                 height=900, width=1440):
     """
     Returns a ChromeDriver instance running in a virtual display.
@@ -103,5 +103,5 @@ def get_browser(user_agent = USER_AGENTS['Chrome 57.0 Win10'],
     # Chrome seems to be automatically assigned to the virtual display
     options = Options()
     options.add_argument("user-agent=" + user_agent)
-    browser = webdriver.Chrome(chrome_options=options)
-    return browser
+    driver = webdriver.Chrome(chrome_options=options)
+    return driver
