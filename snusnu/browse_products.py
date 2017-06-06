@@ -88,7 +88,7 @@ def choose_category(drv):
             print(''.join(cat_option_text))
         print('\nEnter the index of the category you wish to search.')
         user_input = input()
-        if is_int(user_input) and 0<=int(user_input)=len(cat_options):
+        if is_int(user_input) and 0<=int(user_input)<=len(cat_options):
             cat_index = int(user_input)
             selected_cat_name = cat_names[cat_index]
             cat_unselected = False
