@@ -243,7 +243,7 @@ def view_items(drv, search_string, number_products, category,
                 if not successful:
                     try:
                         next_page_arrow = browse.find_element_by_xpath(
-                                                    NEXT_PAGE_ARROW_XPATH)
+												NEXT_PAGE_ARROW_XPATH)
                         next_page_arrow.click()
                         successful = True
                     except NoSuchElementException:
