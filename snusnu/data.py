@@ -38,7 +38,7 @@ class Command():
 
 class ProductCommand(Command):
     def __init__(self, name, description, associated_action,
-                        search_category, search_string, number_of_items):
+					search_category, search_string, number_of_items):
         super(ProductCommand, self).__init__(name, description,
                                             associated_action)
         self.search_string = search_string
@@ -51,12 +51,14 @@ class ProductCommandEncoder(json.JSONEncoder):
     """
     def default(self, obj):
         if isinstance(obj, ProductCommand):
-            return {'Name' : obj.name,
-                    'Description' :  obj.description,
-                    'Associated action' : obj.associated_action.value,
-                    'Search string' : obj.search_string,
-                    'Number of items' : obj.number_of_items,
-                    'Search category' : obj.search_category}
+            return {
+				'Name' 				: 	obj.name,
+				'Description' 		:  	obj.description,
+				'Associated action'	:	obj.associated_action.value,
+				'Search string'   	: 	obj.search_string,
+				'Number of items' 	:	obj.number_of_items,
+				'Search category' 	: 	obj.search_category
+				}
         return json.JSONEncoder.default(self, obj)
 
 class ProductDescriptionEncoder(json.JSONEncoder):
@@ -86,7 +88,8 @@ def parse_product_description(obj):
     """
     if 'Price' in obj:  # Rather than identifying each
                         # ProductDescription as such
-        return ProductDescription(obj['Name'], obj['Price'], obj['Image'])
+        return ProductDescription(obj['Name'], obj['Price'], 
+								               obj['Image'])
 
 def product_commands_to_file(commands, path):
     try:
@@ -99,21 +102,24 @@ def product_commands_to_file(commands, path):
 def product_descriptions_to_file(descriptions, path):
     try:
         with open(path, 'w') as outfile:
-            json.dump(descriptions, outfile, cls=ProductDescriptionEncoder)
+            json.dump(descriptions, outfile, 
+							cls=ProductDescriptionEncoder)
     except FileNotFoundError:
         errors.file_not_found_error(path)
 
 def product_commands_from_file(path):
     try:
         with open(path, 'r') as data_file:
-            return json.load(data_file, object_hook=parse_product_command)
+            return json.load(data_file, 
+							 object_hook=parse_product_command)
     except FileNotFoundError:
         errors.file_not_found_error(path)
 
 def product_descriptions_from_file(path):
     try:
         with open(path, 'r') as data_file:
-            return json.load(data_file, object_hook=parse_product_description)
+            return json.load(data_file,
+							 object_hook=parse_product_description)
     except FileNotFoundError:
         errors.file_not_found_error(path)
 
