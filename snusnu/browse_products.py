@@ -67,39 +67,46 @@ def search(drv, search_term, category_index = 0):
     except NoSuchElementException:
         search_field.send_keys(keys.ENTER)
     return True
-
+def get_category_names(drv):
+	'''
+	Returns a list of string corresponding to Amazon's category select.
+	'''
+	drv.get(AMAZON_UK_URL)
+	cat_select = Select(drv.find_element_by_xpath(
+												CAT_DROPDOWN_XPATH))
+	cat_options = cat_select.options
+	category_names = []
+	for i in range(len(cat_options)):
+		category_names.append(
+			cat_options[i].get_attribute('innerHTML').replace('&amp;','&'))
+	return category_names
+	
 def choose_category(drv):
     '''
     Provides a command-line interface for choosing a category from
     Amazon's drop-down list. Returns the index of the chosen category.
     '''
-    drv.get(AMAZON_UK_URL)
     cat_index = 0
     cat_unselected = True
     while cat_unselected:
-        cat_select = Select(drv.find_element_by_xpath(
-                                                    CAT_DROPDOWN_XPATH))
-        cat_options = cat_select.options
-        cat_names = []
+        cat_names = get_category_names(drv)
         print('Select from the following search categories:\n')
         print(' {0:7}{1}'.format('INDEX', 'NAME'))
         #print(' {0:7}{1}'.format('`````', '````'))
-        for i in range(len(cat_options)):
+        for i in range(len(cat_names)):
             cat_option_text = [' {:7}'.format(str(i))]
-            cat_names.append(cat_options[i].get_attribute('innerHTML'))
-            cat_names[i] = cat_names[i].replace('&amp;','&')
             cat_option_text.append(cat_names[i])
             print(''.join(cat_option_text))
         print('\nEnter the index of the category you wish to search.')
         user_input = input()
-        if is_int(user_input) and 0<=int(user_input)<=len(cat_options):
+        if is_int(user_input) and 0<=int(user_input)<=(len(cat_names)-1):
             cat_index = int(user_input)
             selected_cat_name = cat_names[cat_index]
             cat_unselected = False
         else:
             print('Invalid category index!')
             print('Please enter a number between 0 and '
-                                + str(len(cat_options)))
+                                + str(len(cat_names)-1))
     return cat_index
 
 def view_items(drv, search_string, number_products, category,
