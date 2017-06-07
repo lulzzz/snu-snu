@@ -2,8 +2,8 @@ from snusnu.element_ids import *
 
 def category_xpath_error():
     '''
-    Informs user in command-line that stored Xpath doesn't match 
-    search category drop-down list element on page. 
+    Informs user in command-line that stored Xpath doesn't match
+    search category drop-down list element on page.
     Returns True if user chooses to continue with default category.
     '''
     error_message = ['Stored Xpath ']
@@ -24,6 +24,6 @@ def category_xpath_error():
             return True
 
 def file_not_found_error(path):
-	print('The file specified by path: ' + path + ' does not exist.')
-	print('Quitting...')
-	quit()	
+    print('The file specified by path: ' + path + ' does not exist.')
+    print('Quitting...')
+    quit()

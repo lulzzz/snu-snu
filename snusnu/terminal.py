@@ -60,14 +60,14 @@ training Amazon's recommendation algorithm.\n""")
             print('You ran snu-snu with the argument: ' + sys.argv[1])
             print('This ' + ARGS[sys.argv[1]]['description'])
             if len(sys.argv) == ARGS[sys.argv[1]]['required arg count']:
-                print('Snu-snu will process your arguments after Amazon login.\n')
+                print('Your arguments will be processed after Amazon login.\n')
                 proceed_with_args = True
             else:
-                error = ['Error: this argument will only work with a total of ']
-                error.append(str(ARGS[sys.argv[1]]['required arg count'] - 1))
+                error = ['Error: this argument will only work with exactly ']
+                error.append(str(ARGS[sys.argv[1]][' required arg count'] - 1))
                 error.append(' arguments.')
                 print(''.join(error))
-                print('Do you wish to go to the default snu-snu interface anyway?')
+                print('Do you wish to continue to the text-based interface?')
                 if yes_no_input_prompt():
                     print('Continuing...')
                 else:
@@ -144,7 +144,7 @@ def run(browser):
                         print('Quitting...')
                         exit()
             else:
-                print('Error: there are no commands in the queue to execute.\n')
+                print('Error: cannot execute. The command queue is empty.\n')
         elif selected_command.name == 'exit':
             print('Do you really want to quit snu-snu?')
             if yes_no_input_prompt():
@@ -165,8 +165,8 @@ def run(browser):
             category_number = browse_products.choose_category(browser)
             number_of_products = 0
             if not selected_command.name == 'search':
-                number_of_products = int_input_prompt('How many products should'
-                                        +   ' the command be executed on?\n')
+                number_of_products = int_input_prompt('How many products '
+                                    +   'should the command be executed on?\n')
 
             full_command = data.ProductCommand(selected_command.name,
                                         selected_command.description,

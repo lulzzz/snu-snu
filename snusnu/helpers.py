@@ -15,8 +15,7 @@ def is_float(value):
         return False
 
 def yes_no_input_prompt():
-	decided = False
-	while not decided:
+	while True:
 		user_input = input('Enter Y or N...\n')
 		if user_input.lower() == 'y':
 			return True

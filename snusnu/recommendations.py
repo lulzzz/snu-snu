@@ -31,11 +31,11 @@ def get_recommendations(browser, number_of_recommendations):
 			browser.get(str(recommendations_link.get_attribute('href')))
 			successful = True
 		except ElementNotVisibleException:
-			print('Error: element used to navigate to "your Amazon" not visible.')
+			print('Error: element linking to "your Amazon" not visible.')
 		except NoSuchElementException:
-			print('Error: element used to navigate to "your Amazon" not found.')
+			print('Error: element linking to "your Amazon" not found.')
 	if not successful:
-		print('Failure: unable to navigate to "your Amazon". Check element ids.')
+		print('Failure: cannot navigate to "your Amazon". Check element ids.')
 		return None
 	# Second phase of navigating to recommendations
 	successful = False
@@ -45,8 +45,8 @@ def get_recommendations(browser, number_of_recommendations):
 		recommendations_link.click()
 		successful = True
 	except ElementNotVisibleException:
-		print('Error: element used to navigate to recommendations not visible.')
-		print('Trying to navigate to the link directly...')
+		print('Error: element linking to recommendations not visible.')
+		print('Trying to follow the link directly...')
 		try:
 			browser.get(str(recommendations_link.get_attribute('href')))
 			sucessful = True
@@ -55,7 +55,7 @@ def get_recommendations(browser, number_of_recommendations):
 	except NoSuchElementException:
 		print('Error: element used to navigate to recommendations not found.')
 	if not successful:
-		print('Failure: unable to navigate to recommendations. Check element ids.')
+		print("Failure: can't navigate to recommendations. Check element ids.")
 		return None
 		
 	# Scrape the recommendations
@@ -93,9 +93,9 @@ def get_recommendations(browser, number_of_recommendations):
 			image_message.append('...')
 			print(''.join(image_message))
 			i += 1
-		print ('Selenium found ' + str(len(images)) + ' product image elements')
+		print ('Selenium found ' + str(len(images)) +' product image elements')
 		prices = browser.find_elements_by_class_name(PRICE_SPAN_CLASS)
-		print ('Selenium found ' + str(len(prices)) + ' product price elements')
+		print ('Selenium found ' + str(len(prices)) +' product price elements')
 		prices_text = []
 		for p in prices:
 			prices_text.append(p.get_attribute('innerHTML'))
@@ -134,7 +134,8 @@ def get_recommendations(browser, number_of_recommendations):
 			try:
 				more_results_button = browser.find_element_by_id(
 														MORE_RESULTS_BUTTON_ID)
-				more_results_link = more_results_button.find_element_by_xpath('..')
+				more_results_link = more_results_button.find_element_by_xpath(
+																		  '..')
 				more_results_link.click()
 				successful = True
 			except WebDriverException:
@@ -156,11 +157,3 @@ def get_recommendations(browser, number_of_recommendations):
 															scraped_prices[i],
 															scraped_images[i]))
 	return recommended_products
-	
-def test():
-	browser = webdriver.Chrome()
-	authentication.sign_in(browser, 'adolph.hitler2018@yandex.com', "###")
-	recommendations = get_recommendations(browser, 120)
-	data.product_descriptions_to_file(recommendations, 'ballard_crash_reccomendations.json')
-	
-test()
