@@ -26,6 +26,7 @@ NEXT_PAGE_ARROW_XPATH = '//*[@id="pagnNextLink"]/span[2]'
 PREVIOUS_PAGE_STRING_ID = 'pagnPrevString'
 PREVIOUS_PAGE_LINK_ID = 'pagnPrevLink'
 PREVIOUS_PAGE_ARROW_XPATH = '//*[@id="pagnPrevLink"]/span[1]'
+MORE_RESULTS_LINK_XPATH = '//*[@id="quartsPagelet"]/a'
 
 # Product page related:
 ADD_TO_LIST_BUTTON_ID = 'add-to-wishlist-button-submit'

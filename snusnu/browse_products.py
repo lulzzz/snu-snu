@@ -192,6 +192,7 @@ def view_items(drv, search_string, number_products, category,
             
 def set_shopping_list_default_product_view(drv):
     # Trying to select the shopping list 
+    print('Attempting to set default wishlist to "shopping list"...')
     try:
         shopping_list_select = drv.find_element_by_id(SHOPPING_LIST_SELECT_ID)
         shopping_list_select.click()
@@ -218,7 +219,7 @@ def add_item_list(drv):
     """
     Assumes driver is on a product page. Adds the product to the shopping list.
     """
-    print('Attempting to set default wishlist to "shopping list"...')
+    print('Attempting to add product to "shopping list"...')
     try:
         list_add_button = drv.find_element_by_id(ADD_TO_LIST_BUTTON_ID)
         list_add_button.click()    
