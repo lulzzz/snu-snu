@@ -29,6 +29,9 @@ PREVIOUS_PAGE_ARROW_XPATH = '//*[@id="pagnPrevLink"]/span[1]'
 
 # Product page related:
 ADD_TO_LIST_BUTTON_ID = 'add-to-wishlist-button-submit'
+SHOPPING_LIST_SELECT_ID = 'WLNEW_newsl_section'
+WISH_LIST_SELECT_ID = 'WLNEW_newwl_section'
+LIST_SELECTION_SUBMIT_ID = 'WLNEW_valid_submit'
 
 # Wishlists related
 WISHLISTS_LINK_ID = 'nav-link-wishlist'

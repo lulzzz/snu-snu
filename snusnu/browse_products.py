@@ -15,6 +15,8 @@ from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
 
+# Controls wither set_shopping_list_default_product_view is called
+DEFAULT_WISHLIST_SET = False 
 
 def get_product_link(product_element):
     """Returns the link element inside a product listing element"""
@@ -44,7 +46,7 @@ def search(drv, search_term, category_index = 0):
         use_custom_category = True
         try:
             cat_select = Select(drv.find_element_by_xpath(
-                                          CAT_DROPDOWN_XPATH))
+                                        CAT_DROPDOWN_XPATH))
             cat_select.select_by_index(category_index)
         except NoSuchElementException:
             if category_xpath_error(): # returns bool based on user choice
@@ -74,7 +76,7 @@ def choose_category(drv):
     cat_unselected = True
     while cat_unselected:
         cat_select = Select(drv.find_element_by_xpath(
-													CAT_DROPDOWN_XPATH))
+                                                    CAT_DROPDOWN_XPATH))
         cat_options = cat_select.options
         cat_names = []
         print('Select from the following search categories:\n')
@@ -98,10 +100,150 @@ def choose_category(drv):
                                 + str(len(cat_options)))
     return cat_index
 
+def view_items(drv, search_string, number_products, category,
+                                            item_function = None):
+    search(drv, search_string, category)
+    drv.set_page_load_timeout(30)
+    current_result = 0
+    products_viewed_count = 0
+    item_function_success_count = 0
+    completed = False
+    while not completed:
+        product_elements = drv.find_elements_by_id(
+                            'result_' + str(current_result))
+        # Is there a product element
+        # matching the desired on the page?
+        if(len(product_elements) > 0):
+            product_page_url = drv.current_url
+            try:
+                product_link = get_product_link(product_elements[0])
+                if not product_link == None:
+                    try:
+                        print('Viewing product ' + str(current_result) + '...')
+                        product_link.click()
+                    except:
+                        print('Could not click product element. ' +
+                                        ' Manually getting link.')
+                        drv.get(product_link.get_attribute('href'))
+                    products_viewed_count += 1
+                    if not item_function == None:
+                                    # If present, call a function to
+                                    # do something on the product page
+                        function_successful = item_function(drv)
+                        if function_successful:
+                            item_function_success_count += 1
+                    drv.get(product_page_url) # possibly more robust
+                                                  # than drv.back()
+            except TimeoutException:
+                print('Item page timed out. ' +
+                        'Returning to product page...')
+                drv.get(product_page_url)
+        else:
+            next_page_links = drv.find_elements_by_id(NEXT_PAGE_LINK_ID)
+            if len(next_page_links) > 0:
+                successful = False
+                try:
+                    next_page_text = drv.find_element_by_id(
+                                                    NEXT_PAGE_STRING_ID)
+                    next_page_text.click()
+                    successful = True
+                except NoSuchElementException:
+                    print('Error: next page link not found.')
+                except ElementNotVisibleException:
+                    print('Error: next page link not visible.')
+                except WebDriverException:
+                    print('Unknown error in navigating to next '
+                                                + 'result page.')
+                if not successful:
+                    try:
+                        next_page_arrow = browse.find_element_by_xpath(
+                                                NEXT_PAGE_ARROW_XPATH)
+                        next_page_arrow.click()
+                        successful = True
+                    except NoSuchElementException:
+                        print('Error: next page arrow not found.')
+                    except ElementNotVisibleException:
+                        print('Error: next page arrow not visible.')
+                    except WebDriverException:
+                        print('Unknown error in navigating to next' + 
+                                                    ' result page.')
+                if not successful:
+                    try:
+                        drv.get(next_page_links[0].get_attribute('href'))
+                        successful = True
+                    except WebDriverException:
+                        print('Error: failed to navigate to next ' 
+                                                    + 'result page')
+                if not successful:
+                    end_string =['End of results reached for search: "']
+                    end_string.append(search_string)
+                    end_string.append('". Only ')
+                    end_string.append(str(current_result - 1))
+                    end_string.append(' of the specified ')
+                    end_string.append(str(number_products))
+                    end_string.append(' products viewed.')
+                    print(''.join(end_string))
+                    completed = True
+        current_result += 1
+        if products_viewed_count == number_products:
+            completed = True
+    return {'products viewed'       :   products_viewed_count, 
+            'function success count':   item_function_success_count}
+            
+def set_shopping_list_default_product_view(drv):
+    # Trying to select the shopping list 
+    try:
+        shopping_list_select = drv.find_element_by_id(SHOPPING_LIST_SELECT_ID)
+        shopping_list_select.click()
+    except NoSuchElementException:
+        print('Failed to select "shopping list". No button on page found '
+                                + 'matching stored element id.')
+    except ElementNotVisibleException:
+        print('Failed to select "shopping list". '
+                + 'List add button is not visible.') 
+    # Trying to submit selection
+    try:
+        list_submit = drv.find_element_by_id(LIST_SELECTION_SUBMIT_ID)
+        list_submit.click()
+    except NoSuchElementException:
+        print('Failed to find "list selection submit". No button on page found '
+                                + 'matching stored element id.')
+    except ElementNotVisibleException:
+        print('Failed to click "list selection submit". '
+                + 'Button is not visible.') 
+    global DEFAULT_WISHLIST_SET
+    DEFAULT_WISHLIST_SET = True
+
+def add_item_list(drv):
+    """
+    Assumes driver is on a product page. Adds the product to the shopping list.
+    """
+    print('Attempting to set default wishlist to "shopping list"...')
+    try:
+        list_add_button = drv.find_element_by_id(ADD_TO_LIST_BUTTON_ID)
+        list_add_button.click()    
+        global DEFAULT_WISHLIST_SET                
+        if not DEFAULT_WISHLIST_SET:
+            set_shopping_list_default_product_view(drv)
+        print('Sucessful.')
+        return True
+    except NoSuchElementException:
+        print('Failed to add item to list. No button on page found '
+                                + 'matching stored element ids.')
+    except ElementNotVisibleException:
+        print('Failed to add item to list. '
+                + 'List add button is not visible.')
+    except WebDriverException:
+        print('Unknown error. Failed to add item to wishlist.')
+    return False
+
+'''
+DEFUNCT FUNCTION v
+
 def set_shopping_list_default(drv):
     """
     WARNING: Not functional. Intended to set default wishlist
-    to "shopping list" from
+    to "shopping list" from "wishlist".
     """
     print('Attempting to navigate to "Lists"...')
     successful = False
@@ -130,7 +272,7 @@ def set_shopping_list_default(drv):
             print('Success!')
         except NoSuchElementException:
             print('Error: no "lists" link element found matching ' 
-					+ 'stored XPATH.')
+                    + 'stored XPATH.')
             return False
         except WebDriverException:
             print('Error failed to navigate to "Lists" page.')
@@ -144,19 +286,18 @@ def set_shopping_list_default(drv):
         print('Success!')
     except NoSuchElementException:
         print('Error: No "Lists" settings button found matching'  
-				+ 'stored XPATH.')
+                + 'stored XPATH.')
         return False
     except ElementNotVisibleException:
         print('Error: "Lists" settings button not visible.')
         return False
     except WebDriverException:
         print('Unknown error in finding or clicking "Lists"' 
-									+ 'settings button.')
+                                    + 'settings button.')
         return False
 
     print('Trying to select "Shopping list" as default...')
     try:
-
         # MAY NEED TO ASK SELENIUM TO WAIT UNTIL SELECT IS VISIBLE
         shopping_list_default_select = drv.find_element_by_xpath(
                             WISHLISTS_SHOPPING_DEFAULT_SELECT_XPATH)
@@ -164,14 +305,14 @@ def set_shopping_list_default(drv):
         print('Success!')
     except NoSuchElementException:
         print('Error: No "Shopping list" select found matching '
-											+ 'stored XPATH.')
+                                            + 'stored XPATH.')
         return False
     except ElementNotVisibleException:
         print('Error: "Shopping list" select not visible.')
         return False
     except WebDriverException:
         print('Unknown error in finding or clicking "Shopping list"' 
-													+ ' select.')
+                                                    + ' select.')
         return False
 
     print('Trying to submit chanes to settings...')
@@ -190,100 +331,4 @@ def set_shopping_list_default(drv):
         print('Unknown error in finding or clicking "submit" button.')
         return False
     return True
-
-def view_items(drv, search_string, number_products, category,
-                                            item_function = None):
-    search(drv, search_string, category)
-    drv.set_page_load_timeout(30)
-    current_result = 0
-    completed = False
-    while not completed:
-        product_elements = drv.find_elements_by_id(
-                            'result_' + str(current_result))
-        # Is there a product element
-        # matching the desired on the page?
-        if(len(product_elements) > 0):
-            product_page_url = drv.current_url
-            try:
-                product_link = get_product_link(product_elements[0])
-                if not product_link == None:
-                    try:
-                        product_link.click()
-                    except:
-                        print('Could not click product element. ' +
-                                        ' Manually getting link.')
-                        drv.get(product_link.get_attribute('href'))
-                    # If present, call a function to
-                    # do something on the product page
-                    if not item_function == None:
-                        item_function(drv)
-                    drv.get(product_page_url) # possibly more robust
-                                                  # than drv.back()
-            except TimeoutException:
-                print('Item page timed out. ' +
-                        'Returning to product page...')
-        else:
-            next_page_links = drv.find_elements_by_id(NEXT_PAGE_LINK_ID)
-            if len(next_page_links) > 0:
-                successful = False
-                try:
-                    next_page_text = drv.find_element_by_id(
-													NEXT_PAGE_STRING_ID)
-                    next_page_text.click()
-                    successful = True
-                except NoSuchElementException:
-                    print('Error: next page link not found.')
-                except ElementNotVisibleException:
-                    print('Error: next page link not visible.')
-                except WebDriverException:
-                    print('Unknown error in navigating to next '
-												+ 'result page.')
-                if not successful:
-                    try:
-                        next_page_arrow = browse.find_element_by_xpath(
-												NEXT_PAGE_ARROW_XPATH)
-                        next_page_arrow.click()
-                        successful = True
-                    except NoSuchElementException:
-                        print('Error: next page arrow not found.')
-                    except ElementNotVisibleException:
-                        print('Error: next page arrow not visible.')
-                    except WebDriverException:
-                        print('Unknown error in navigating to next' + 
-													' result page.')
-                if not successful:
-                    try:
-                        drv.get(next_page_links[0].get_attribute('href'))
-                        successful = True
-                    except WebDriverException:
-                        print('Error: failed to navigate to next ' 
-													+ 'result page')
-
-
-                if not successful:
-                    end_string =['End of results reached for search: "']
-                    end_string.append(search_string)
-                    end_string.append('". Only ')
-                    end_string.append(str(current_result - 1))
-                    end_string.append(' of the specified ')
-                    end_string.append(str(number_products))
-                    end_string.append(' products viewed.')
-                    print(''.join(end_string))
-                    completed = True
-        current_result += 1
-        if current_result > number_products:
-            completed = True
-
-
-def add_item_list(drv) :
-    # NEEDS CODE TO TEST IF DEFAULT LIST HAS BEEN CHOSEN
-    # AND SELECT SHOPPING LIST IF NEEDED
-    try:
-        list_add_button = drv.find_element_by_id(ADD_TO_LIST_BUTTON_ID)
-        list_add_button.click()
-    except NoSuchElementException:
-        print('Failed to add item to list. No button on page found '
-							+'matching stored element ids.')
-    except ElementNotVisibleException:
-        print('Failed to add item to list. '
-				+ 'List add button is not visible.')
+'''
