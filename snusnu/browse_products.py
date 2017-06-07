@@ -16,7 +16,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
 
 # Controls wither set_shopping_list_default_product_view is called
-DEFAULT_WISHLIST_SET = False 
+DEFAULT_WISHLIST_SET = False
 
 def get_product_link(product_element):
     """Returns the link element inside a product listing element"""
@@ -32,7 +32,7 @@ def go_home(drv):
         logo_link = drv.find_element_by_id(NAV_LOGO_ID)
         logo_link.click()
     except NoSuchElementException:
-        drv.get(AMAZON_URL)
+        drv.get(AMAZON_UK_URL)
 
 def search(drv, search_term, category_index = 0):
     '''
@@ -40,6 +40,7 @@ def search(drv, search_term, category_index = 0):
     argument specifiying a product category.
     Returns True if successful.
     '''
+    drv.get(AMAZON_UK_URL)
     print('Searching for "' + search_term + '"...')
     use_custom_category = False
     if not category_index == 0:
@@ -69,9 +70,10 @@ def search(drv, search_term, category_index = 0):
 
 def choose_category(drv):
     '''
-    Provides a command-line interface for choosing a category from 
+    Provides a command-line interface for choosing a category from
     Amazon's drop-down list. Returns the index of the chosen category.
     '''
+    drv.get(AMAZON_UK_URL)
     cat_index = 0
     cat_unselected = True
     while cat_unselected:
@@ -132,7 +134,8 @@ def view_items(drv, search_string, number_products, category,
                         function_successful = item_function(drv)
                         if function_successful:
                             item_function_success_count += 1
-                    drv.get(product_page_url) # possibly more robust
+                    while not drv.current_url ==  product_page_url:
+                        drv.get(product_page_url) # possibly more robust
                                                   # than drv.back()
             except TimeoutException:
                 print('Item page timed out. ' +
@@ -165,14 +168,14 @@ def view_items(drv, search_string, number_products, category,
                     except ElementNotVisibleException:
                         print('Error: next page arrow not visible.')
                     except WebDriverException:
-                        print('Unknown error in navigating to next' + 
+                        print('Unknown error in navigating to next' +
                                                     ' result page.')
                 if not successful:
                     try:
                         drv.get(next_page_links[0].get_attribute('href'))
                         successful = True
                     except WebDriverException:
-                        print('Error: failed to navigate to next ' 
+                        print('Error: failed to navigate to next '
                                                     + 'result page')
                 if not successful:
                     end_string =['End of results reached for search: "']
@@ -187,11 +190,11 @@ def view_items(drv, search_string, number_products, category,
         current_result += 1
         if products_viewed_count == number_products:
             completed = True
-    return {'products viewed'       :   products_viewed_count, 
+    return {'products viewed'       :   products_viewed_count,
             'function success count':   item_function_success_count}
-            
+
 def set_shopping_list_default_product_view(drv):
-    # Trying to select the shopping list 
+    # Trying to select the shopping list
     print('Attempting to set default wishlist to "shopping list"...')
     try:
         shopping_list_select = drv.find_element_by_id(SHOPPING_LIST_SELECT_ID)
@@ -201,7 +204,7 @@ def set_shopping_list_default_product_view(drv):
                                 + 'matching stored element id.')
     except ElementNotVisibleException:
         print('Failed to select "shopping list". '
-                + 'List add button is not visible.') 
+                + 'List add button is not visible.')
     # Trying to submit selection
     try:
         list_submit = drv.find_element_by_id(LIST_SELECTION_SUBMIT_ID)
@@ -211,7 +214,7 @@ def set_shopping_list_default_product_view(drv):
                                 + 'matching stored element id.')
     except ElementNotVisibleException:
         print('Failed to click "list selection submit". '
-                + 'Button is not visible.') 
+                + 'Button is not visible.')
     global DEFAULT_WISHLIST_SET
     DEFAULT_WISHLIST_SET = True
 
@@ -222,8 +225,8 @@ def add_item_list(drv):
     print('Attempting to add product to "shopping list"...')
     try:
         list_add_button = drv.find_element_by_id(ADD_TO_LIST_BUTTON_ID)
-        list_add_button.click()    
-        global DEFAULT_WISHLIST_SET                
+        list_add_button.click()
+        global DEFAULT_WISHLIST_SET
         if not DEFAULT_WISHLIST_SET:
             set_shopping_list_default_product_view(drv)
         print('Sucessful.')
@@ -272,7 +275,7 @@ def set_shopping_list_default(drv):
             drv.get(lists_menu_link.get_attribute('href'))
             print('Success!')
         except NoSuchElementException:
-            print('Error: no "lists" link element found matching ' 
+            print('Error: no "lists" link element found matching '
                     + 'stored XPATH.')
             return False
         except WebDriverException:
@@ -286,14 +289,14 @@ def set_shopping_list_default(drv):
         settings_link.click()
         print('Success!')
     except NoSuchElementException:
-        print('Error: No "Lists" settings button found matching'  
+        print('Error: No "Lists" settings button found matching'
                 + 'stored XPATH.')
         return False
     except ElementNotVisibleException:
         print('Error: "Lists" settings button not visible.')
         return False
     except WebDriverException:
-        print('Unknown error in finding or clicking "Lists"' 
+        print('Unknown error in finding or clicking "Lists"'
                                     + 'settings button.')
         return False
 
@@ -312,7 +315,7 @@ def set_shopping_list_default(drv):
         print('Error: "Shopping list" select not visible.')
         return False
     except WebDriverException:
-        print('Unknown error in finding or clicking "Shopping list"' 
+        print('Unknown error in finding or clicking "Shopping list"'
                                                     + ' select.')
         return False
 
