@@ -1,5 +1,5 @@
 # General
-AMAZON_URL = 'https://www.amazon.co.uk'
+AMAZON_UK_URL = 'https://www.amazon.co.uk'
 NAV_LOGO_ID = 'nav-logo'
 
 # Sign-in related:
