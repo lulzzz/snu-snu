@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 # Local
-from snusnu.element_ids import AMAZON_URL
+from snusnu.element_ids import AMAZON_UK_URL
 import snusnu.data as data
 import snusnu.browse_products as browse_products
 from snusnu.helpers import yes_no_input_prompt, int_input_prompt
@@ -235,9 +235,9 @@ def frequency_analysis():
             else:
                 validated = True
     print('You will now be asked to select a category in which to search...')
-    browser = webdriver.Chrome()
-    browser.get(AMAZON_URL)
-    product_category = browse_products.choose_category(browser)
+    drv = webdriver.Chrome()
+    drv.get(AMAZON_UK_URL)
+    product_category = browse_products.choose_category(drv)
 
     generated_commands = []
     for w in selected_words:

@@ -10,14 +10,14 @@ from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import WebDriverException
 from selenium import webdriver
 
-def get_recommendations(browser, number_of_recommendations):
+def get_recommendations(drv, number_of_recommendations):
 	""" Assumes Amazon user is authenticated.
 		Gets a specified number of recommendations """
 	print('Navigating to recommendations...')
 	# First phase of navigating to recommendations
 	successful = False
 	try:
-		your_amazon_button = browser.find_element_by_id(NAV_YOUR_AMAZON_ID)
+		your_amazon_button = drv.find_element_by_id(NAV_YOUR_AMAZON_ID)
 		your_amazon_button.click()
 		successful = True
 	except ElementNotVisibleException:
@@ -26,9 +26,9 @@ def get_recommendations(browser, number_of_recommendations):
 		print('Error: element used to navigate to "your Amazon" not found.')
 	if not successful:
 		try:
-			recommendations_link = browser.find_element_by_xpath(
+			recommendations_link = drv.find_element_by_xpath(
 											MENU_YOUR_RECOMMENDATIONS_XPATH)
-			browser.get(str(recommendations_link.get_attribute('href')))
+			drv.get(str(recommendations_link.get_attribute('href')))
 			successful = True
 		except ElementNotVisibleException:
 			print('Error: element linking to "your Amazon" not visible.')
@@ -40,7 +40,7 @@ def get_recommendations(browser, number_of_recommendations):
 	# Second phase of navigating to recommendations
 	successful = False
 	try:
-		recommendations_link = browser.find_element_by_xpath(
+		recommendations_link = drv.find_element_by_xpath(
 												NAV_RECOMMENDED_FOR_YOU_XPATH)
 		recommendations_link.click()
 		successful = True
@@ -48,7 +48,7 @@ def get_recommendations(browser, number_of_recommendations):
 		print('Error: element linking to recommendations not visible.')
 		print('Trying to follow the link directly...')
 		try:
-			browser.get(str(recommendations_link.get_attribute('href')))
+			drv.get(str(recommendations_link.get_attribute('href')))
 			sucessful = True
 		except:
 			print('Error: failed to follow link to recommendations')
@@ -64,7 +64,7 @@ def get_recommendations(browser, number_of_recommendations):
 	scraped_prices = []
 	recommendations_scraped = 0
 	while recommendations_scraped < (number_of_recommendations + 1): #precaution
-		names = browser.find_elements_by_xpath(PARTIAL_PRODUCT_NAME_XPATH)
+		names = drv.find_elements_by_xpath(PARTIAL_PRODUCT_NAME_XPATH)
 		print ('Selenium found ' + str(len(names)) + ' product name elements')
 		names_text = []
 		for n in names:
@@ -78,7 +78,7 @@ def get_recommendations(browser, number_of_recommendations):
 			names_text_stripped.append(name)
 			print('Stripping HTML...\n' + name)
 			i += 1
-		images = browser.find_elements_by_xpath(PARTIAL_PRODUCT_IMAGE_XPATH)
+		images = drv.find_elements_by_xpath(PARTIAL_PRODUCT_IMAGE_XPATH)
 		image_urls = []
 		for i in images:
 			image_urls.append(i.get_attribute('src'))
@@ -94,7 +94,7 @@ def get_recommendations(browser, number_of_recommendations):
 			print(''.join(image_message))
 			i += 1
 		print ('Selenium found ' + str(len(images)) +' product image elements')
-		prices = browser.find_elements_by_class_name(PRICE_SPAN_CLASS)
+		prices = drv.find_elements_by_class_name(PRICE_SPAN_CLASS)
 		print ('Selenium found ' + str(len(prices)) +' product price elements')
 		prices_text = []
 		for p in prices:
@@ -123,7 +123,7 @@ def get_recommendations(browser, number_of_recommendations):
 		# Navigate to next page of recommendations
 		successful = False	
 		try:
-			more_results_button = browser.find_element_by_id(
+			more_results_button = drv.find_element_by_id(
 													MORE_RESULTS_BUTTON_ID)
 			more_results_button.click()
 			successful = True
@@ -132,7 +132,7 @@ def get_recommendations(browser, number_of_recommendations):
 					+ ' Trying parent element...')
 		if not successful:
 			try:
-				more_results_button = browser.find_element_by_id(
+				more_results_button = drv.find_element_by_id(
 														MORE_RESULTS_BUTTON_ID)
 				more_results_link = more_results_button.find_element_by_xpath(
 																		  '..')
@@ -142,7 +142,7 @@ def get_recommendations(browser, number_of_recommendations):
 				try:
 					print('Possible error finding "more results" link. '
 							+ 'Trying alternative xpath...')
-					more_results_link = browser.find_element_by_xpath(
+					more_results_link = drv.find_element_by_xpath(
 													MORE_RESULTS_LINK_XPATH)
 					more_results_link.click()
 					successful = True

@@ -30,13 +30,13 @@ COMMANDS = [data.Command('search',
             data.Command('execute', 'Execute all queued commands.'),
             data.Command('exit', 'Quit snu-snu.')]
 
-def json_input(browser):
+def json_input(drv):
     """
     attempts to get JSON representations of commands from a path specified 
     as an argument and execute all of them.
     """
     commands = data.product_commands_from_file(sys.argv[2])
-    execute_commands(browser, commands)
+    execute_commands(drv, commands)
 
 # Dictionary of dictionaries defining command arguments accepted by snu-snu
 ARGS = {'input': 
@@ -74,13 +74,13 @@ training Amazon's recommendation algorithm.\n""")
                     print('Quitting...')
                     quit()
                         
-    # Tries to get an authenticated browser
-    browser = authenticate()
+    # Tries to get an authenticated drv
+    drv = authenticate()
 
     if proceed_with_args:
-        ARGS[sys.argv[1]]['function'](browser)
+        ARGS[sys.argv[1]]['function'](drv)
     else:
-        run(browser)
+        run(drv)
     
 def authenticate():
     """ 
@@ -93,12 +93,12 @@ Amazon account you wish to train...\n""")
     while not authenticated:
         email = input('Please enter the email address used for Amazon...\n')
         password = getpass.getpass("Please enter the password...\n")
-        browser = webdriver.Chrome() # May need browser selection at later date
-        if authentication.sign_in(browser, email, password):
+        drv = webdriver.Chrome() # May need drv selection at later date
+        if authentication.sign_in(drv, email, password):
             authenticated = True
-            return browser
+            return drv
         else:
-            browser.quit()
+            drv.quit()
             print('Authentication failed. Do you want to try again?')
             if yes_no_input_prompt():
                 print('Retrying...')            
@@ -106,7 +106,7 @@ Amazon account you wish to train...\n""")
                 print('Snu-snu requires Amazon authentication. Quitting...')
                 exit()
 
-def run(browser):
+def run(drv):
     running = True
     queued_commands = []
     while running:
@@ -132,7 +132,7 @@ def run(browser):
                 print('Command not recognised!')
         if selected_command.name == 'execute':
             if len(queued_commands) > 0:
-                if execute_commands(browser, queued_commands):
+                if execute_commands(drv, queued_commands):
                     print('Command(s) executed sucessfully.')
                 else:
                     print('Commands(s) executed with one or more errors.')
@@ -162,7 +162,7 @@ def run(browser):
             print(''.join(intro))
             print('Please enter the search term to use when finding products.')
             search_term = input()
-            category_number = browse_products.choose_category(browser)
+            category_number = browse_products.choose_category(drv)
             number_of_products = 0
             if not selected_command.name == 'search':
                 number_of_products = int_input_prompt('How many products '
@@ -184,7 +184,7 @@ def run(browser):
             success.append('\nEnter the "execute" command to carry it out.\n')
             print(''.join(success))
 
-def execute_commands(browser, command_list):
+def execute_commands(drv, command_list):
     """ 
     Executes a list of commands defined by Command objects. Returns True
     if completely succesful
@@ -192,13 +192,13 @@ def execute_commands(browser, command_list):
     error_has_occured = False
     for c in command_list:
         if c.associated_action == data.ProductAction.search:
-            if not browse_products.search(browser,
+            if not browse_products.search(drv,
                                     c.search_string,
                                     c.search_category):
                 error_has_occured = True
 
         elif c.associated_action == data.ProductAction.view:
-            if not browse_products.view_items(browser,
+            if not browse_products.view_items(drv,
                                         c.search_string,
                                         c.number_of_items,
                                         c.search_category):
@@ -209,20 +209,20 @@ def execute_commands(browser, command_list):
             if not ATTEMPTED_SET_DEFAULT_LIST:
                 print("It is possble that the default list is not set.")
                 print('Attempting to set default list to "Shopping list"...')
-                if browse_products.set_shopping_list_default(browser):
+                if browse_products.set_shopping_list_default(drv):
                     print('"Shopping list" either already default ' +
                                     'or succesfully set to default.')
                 else:
                     print('Failed to set "Shopping list" to default!')
                     print('It may be necessary to set it manaully.')
                 ATTEMPTED_SET_DEFAULT_LIST = True
-            if not browse_products.view_items(browser,
+            if not browse_products.view_items(drv,
                                         c.search_string,
                                         c.number_of_items,
                                         c.search_category,
                                         browse_products.add_item_list):
                 error_has_occured = True
-        browse_products.go_home(browser)
+        browse_products.go_home(drv)
     if error_has_occured:
         return False
     else:

@@ -6,19 +6,19 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 
-IMPLICIT_WAIT = 3; # seconds for the browser to wait for elements to load
+IMPLICIT_WAIT = 3; # seconds for the drv to wait for elements to load
 # elements ids used on Amazon.co.uk home page that link to sign-in page
 
-def sign_in(browser, username, password):
-    browser.implicitly_wait(IMPLICIT_WAIT)
-    browser.get('https://www.amazon.co.uk/')
+def sign_in(drv, username, password):
+    drv.implicitly_wait(IMPLICIT_WAIT)
+    drv.get('https://www.amazon.co.uk/')
     already_signed_in = True;
 
     try:
-        sign_out_link = browser.find_element_by_xpath(SIGN_OUT_LINK_XPATH_UK)
-        print('Your browser appears to be signed in already.')
+        sign_out_link = drv.find_element_by_xpath(SIGN_OUT_LINK_XPATH_UK)
+        print('Your drv appears to be signed in already.')
         print('Signing out...')
-        browser.get(str(sign_out_link.get_attribute('href')))
+        drv.get(str(sign_out_link.get_attribute('href')))
     except NoSuchElementException:
         already_signed_in = False;
 
@@ -27,13 +27,13 @@ def sign_in(browser, username, password):
         for i  in range(len(SIGN_IN_XPATHS_UK)):
             try:
                 print('Trying sign-in link ' + str(i) + '...')
-                sign_in_link = browser.find_element_by_xpath(
+                sign_in_link = drv.find_element_by_xpath(
                                                 SIGN_IN_XPATHS_UK[i])
                 if sign_in_link.is_displayed() :
                     sign_in_link.click()
                 else:
                     #print(sign_in_link.get_attribute('href'))
-                    browser.get(str(sign_in_link.get_attribute('href')))
+                    drv.get(str(sign_in_link.get_attribute('href')))
                 print('Sign-in link ' + str(i) + ' works!')
                 break;
             except NoSuchElementException:
@@ -54,8 +54,8 @@ def sign_in(browser, username, password):
     print('Attempting to sign in...')
     # locate sign-in elements
     try:
-        email_field = browser.find_element_by_xpath(EMAIL_FIELD_XPATH_UK)
-        password_field = browser.find_element_by_xpath(PASSWORD_FIELD_XPATH_UK)
+        email_field = drv.find_element_by_xpath(EMAIL_FIELD_XPATH_UK)
+        password_field = drv.find_element_by_xpath(PASSWORD_FIELD_XPATH_UK)
     except NoSuchElementException:
         print("Unable to locate email/password fields!"
             + " Stored Xpaths do not match webpage.")
@@ -67,7 +67,7 @@ def sign_in(browser, username, password):
     email_field.send_keys(username)
     password_field.send_keys(password)
     try:
-        sign_in_button = browser.find_element_by_xpath(SIGN_IN_BUTTON_XPATH_UK)
+        sign_in_button = drv.find_element_by_xpath(SIGN_IN_BUTTON_XPATH_UK)
         print('Loading home page...')
         sign_in_button.click()
     except NoSuchElementException:
@@ -76,7 +76,7 @@ def sign_in(browser, username, password):
 
     # Try to get array containing sign-out menu item.
     # Array should be empty if sign-in unsuccesful.
-    if len(browser.find_elements_by_xpath(SIGN_OUT_LINK_XPATH_UK)) > 0 :
+    if len(drv.find_elements_by_xpath(SIGN_OUT_LINK_XPATH_UK)) > 0 :
         print('Sign in succesful!\n')
         return True;
     else :
