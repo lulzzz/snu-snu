@@ -14,6 +14,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import StaleElementReferenceException
 
 # Controls wither set_shopping_list_default_product_view is called
 DEFAULT_WISHLIST_SET = False
@@ -68,19 +69,19 @@ def search(drv, search_term, category_index = 0):
         search_field.send_keys(keys.ENTER)
     return True
 def get_category_names(drv):
-	'''
-	Returns a list of string corresponding to Amazon's category select.
-	'''
-	drv.get(AMAZON_UK_URL)
-	cat_select = Select(drv.find_element_by_xpath(
-												CAT_DROPDOWN_XPATH))
-	cat_options = cat_select.options
-	category_names = []
-	for i in range(len(cat_options)):
-		category_names.append(
-			cat_options[i].get_attribute('innerHTML').replace('&amp;','&'))
-	return category_names
-	
+    '''
+    Returns a list of string corresponding to Amazon's category select.
+    '''
+    drv.get(AMAZON_UK_URL)
+    cat_select = Select(drv.find_element_by_xpath(
+                                                CAT_DROPDOWN_XPATH))
+    cat_options = cat_select.options
+    category_names = []
+    for i in range(len(cat_options)):
+        category_names.append(
+            cat_options[i].get_attribute('innerHTML').replace('&amp;','&'))
+    return category_names
+    
 def choose_category(drv):
     '''
     Provides a command-line interface for choosing a category from
@@ -118,11 +119,19 @@ def view_items(drv, search_string, number_products, category,
     item_function_success_count = 0
     completed = False
     while not completed:
-        product_elements = drv.find_elements_by_id(
-                            'result_' + str(current_result))
+        product_elements = [] # Setting empty in case of error
+        try:
+            product_elements = drv.find_elements_by_id(
+                                            'result_' + str(current_result))
+        except TimeOutException:
+            print('WebDriver timed out. Could not find next product listing')
+        except StaleElementReferenceException:
+            print('WebDriver found stale reference to product. Skipping...')
+        except WebDriverException:
+            print('Unknown error. Skipping product listing...')
         # Is there a product element
         # matching the desired on the page?
-        if(len(product_elements) > 0):
+        if len(product_elements) > 0:
             product_page_url = drv.current_url
             try:
                 product_link = get_product_link(product_elements[0])
