@@ -28,26 +28,26 @@ COMMANDS = [data.Command('search',
 
 def json_input(drv):
     """
-    attempts to get JSON representations of commands from a path specified 
+    attempts to get JSON representations of commands from a path specified
     as an argument and execute all of them.
     """
     commands = data.product_commands_from_file(sys.argv[2])
     execute_commands(drv, commands)
 
 # Dictionary of dictionaries defining command arguments accepted by snu-snu
-ARGS = {'input': 
-	{
-	'description' : 'attempts to exceute commands from a JSON file.',
-	'required arg count' : 3, 
-	'function' : json_input}
-	}
+ARGS = {'input':
+    {
+    'description' : 'attempts to exceute commands from a JSON file.',
+    'required arg count' : 3,
+    'function' : json_input}
+    }
 
 def initialise():
     """
-    Checks arguments and decides whether or not 
+    Checks arguments and decides whether or not
     to use the default interface.
     """
-    print("""Welcome to snu-snu: the program that takes the hard work 
+    print("""Welcome to snu-snu: the program that takes the hard work
 out of training Amazon's recommendation algorithm.\n""")
     proceed_with_args = False
     if len(sys.argv) > 1:
@@ -60,23 +60,23 @@ out of training Amazon's recommendation algorithm.\n""")
             print('This ' + ARGS[sys.argv[1]]['description'])
             if len(sys.argv) == ARGS[sys.argv[1]]['required arg count']:
                 print('Your arguments will be processed '
-					+ 'after Amazon login.\n')
+                    + 'after Amazon login.\n')
                 proceed_with_args = True
             else:
                 error = ['Error: this argument will only '
-					+ ' work with exactly ']
+                    + ' work with exactly ']
                 error.append(str(ARGS[sys.argv[1]][
-											' required arg count'] - 1))
+                                            ' required arg count'] - 1))
                 error.append(' arguments.')
                 print(''.join(error))
                 print('Do you wish to continue to '
-							+ ' the text-based interface?')
+                            + ' the text-based interface?')
                 if yes_no_input_prompt():
                     print('Continuing...')
                 else:
                     print('Quitting...')
                     quit()
-                        
+
     # Tries to get an authenticated drv
     drv = authenticate()
 
@@ -84,9 +84,9 @@ out of training Amazon's recommendation algorithm.\n""")
         ARGS[sys.argv[1]]['function'](drv)
     else:
         run(drv)
-    
+
 def authenticate():
-    """ 
+    """
     Signs into Amazon and return a webdriver object if successful
     """
     print("""You will now be asked for the email address and password
@@ -95,7 +95,7 @@ def authenticate():
     authenticated = False
     while not authenticated:
         email = input('Please enter the email address used '
-			+ 'for Amazon...\n')
+            + 'for Amazon...\n')
         password = getpass.getpass("Please enter the password...\n")
         drv = webdriver.Chrome() # May need drv selection at later date
         if authentication.sign_in(drv, email, password):
@@ -105,10 +105,10 @@ def authenticate():
             drv.quit()
             print('Authentication failed. Do you want to try again?')
             if yes_no_input_prompt():
-                print('Retrying...')            
+                print('Retrying...')
             else:
                 print('Snu-snu requires Amazon authentication.'
-					+ ' Quitting...')
+                    + ' Quitting...')
                 exit()
 
 def run(drv):
@@ -149,8 +149,8 @@ def run(drv):
                         print('Quitting...')
                         exit()
             else:
-                print('Error: cannot execute. ' 
-					+ 'The command queue is empty.\n')
+                print('Error: cannot execute. '
+                    + 'The command queue is empty.\n')
         elif selected_command.name == 'exit':
             print('Do you really want to quit snu-snu?')
             if yes_no_input_prompt():
@@ -166,25 +166,32 @@ def run(drv):
             intro.append('" will do the following: ')
             intro.append(selected_command.description)
             print(''.join(intro))
-            print('Please enter the search term to ' 
-				+ 'use when finding products.')
-            search_term = input()
+            print('Please enter the search term to '
+                + 'use when finding products.')
+            awaiting_input = True
+            while awaiting_input:
+                search_term = input()
+                if search_term == '':
+                    print('Search term cannot be empty. Please renter.')
+                else:
+                    awaiting_input = False;
+
             category_number = browse_products.choose_category(drv)
             number_of_products = 0
             if not selected_command.name == 'search':
                 number_of_products = int_input_prompt('How many  '
-					+   'products should the command be executed on?\n')
+                    +   'products should the command be executed on?\n')
 
             full_command = data.ProductCommand(
-				selected_command.name,
-				selected_command.description,
-				selected_command.associated_action,
-				category_number,
-				search_term,
-				number_of_products)
+                selected_command.name,
+                selected_command.description,
+                selected_command.associated_action,
+                category_number,
+                search_term,
+                number_of_products)
             queued_commands.append(full_command)
-            
-            
+
+
             success = []
             success.append('Command "')
             success.append(full_command.name)
@@ -193,7 +200,7 @@ def run(drv):
             print(''.join(success))
 
 def execute_commands(drv, command_list):
-    """ 
+    """
     Executes a list of commands defined by Command objects. Returns True
     if completely succesful
     """
