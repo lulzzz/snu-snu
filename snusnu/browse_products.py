@@ -58,7 +58,8 @@ def search(drv, search_term, category_index = 0):
     try:
         search_field = drv.find_element_by_xpath(SEARCH_FIELD_XPATH)
     except NoSuchElementException:
-        print('Stored Xpath does not match search text box element on page.')
+        print('Stored Xpath does not match search text box'
+				+' element on page.')
         print('Aborting search...')
         return False
     search_field.send_keys(search_term)
@@ -137,7 +138,8 @@ def view_items(drv, search_string, number_products, category,
                 product_link = get_product_link(product_elements[0])
                 if not product_link == None:
                     try:
-                        print('Viewing product ' + str(current_result) + '...')
+                        print('Viewing product ' + str(current_result) 
+                        + '...')
                         product_link.click()
                     except:
                         print('Could not click product element. ' +
@@ -213,11 +215,12 @@ def set_shopping_list_default_product_view(drv):
     # Trying to select the shopping list
     print('Attempting to set default wishlist to "shopping list"...')
     try:
-        shopping_list_select = drv.find_element_by_id(SHOPPING_LIST_SELECT_ID)
+        shopping_list_select = drv.find_element_by_id(
+								SHOPPING_LIST_SELECT_ID)
         shopping_list_select.click()
     except NoSuchElementException:
-        print('Failed to select "shopping list". No button on page found '
-                                + 'matching stored element id.')
+        print('Failed to select "shopping list". No button on page '
+                                + 'found matching stored element id.')
     except ElementNotVisibleException:
         print('Failed to select "shopping list". '
                 + 'List add button is not visible.')
@@ -226,17 +229,18 @@ def set_shopping_list_default_product_view(drv):
         list_submit = drv.find_element_by_id(LIST_SELECTION_SUBMIT_ID)
         list_submit.click()
     except NoSuchElementException:
-        print('Failed to find "list selection submit". No button on page found '
-                                + 'matching stored element id.')
+        print('Failed to find "list selection submit". No button on '
+							+ 'page found matching stored element id.')
     except ElementNotVisibleException:
         print('Failed to click "list selection submit". '
-                + 'Button is not visible.')
+							+ 'Button is not visible.')
     global DEFAULT_WISHLIST_SET
     DEFAULT_WISHLIST_SET = True
 
 def add_item_list(drv):
     """
-    Assumes driver is on a product page. Adds the product to the shopping list.
+    Assumes driver is on a product page. Adds the product to 
+    the shopping list.
     """
     print('Attempting to add product to "shopping list"...')
     try:
@@ -257,98 +261,3 @@ def add_item_list(drv):
         print('Unknown error. Failed to add item to wishlist.')
     return False
 
-'''
-DEFUNCT FUNCTION v
-
-def set_shopping_list_default(drv):
-    """
-    WARNING: Not functional. Intended to set default wishlist
-    to "shopping list" from "wishlist".
-    """
-    print('Attempting to navigate to "Lists"...')
-    successful = False
-    try:
-        lists_link_button = drv.find_element_by_id(WISHLISTS_LINK_ID)
-        lists_link_button.click()
-        successful = True
-        print('Success!')
-    except NoSuchElementException:
-        print('Error: no "lists" link element found matching stored ID.')
-    except ElementNotVisibleException:
-        print('Error: "Lists" link identified by stored ID not visible.')
-        print('Trying getting the link directly...')
-        try:
-            drv.get(lists_link_button.get_attribute('href'))
-            successful = True
-            print('Success!')
-        except WebDriverException:
-            print('Error failed to navigate to "Lists" page.')
-    if not successful:
-        try:
-            print('Trying to get the "lists" link from the menu...' )
-            lists_menu_link = drv.find_element_by_xpath(
-                                    WISHLISTS_MENU_LINK_XPATH)
-            drv.get(lists_menu_link.get_attribute('href'))
-            print('Success!')
-        except NoSuchElementException:
-            print('Error: no "lists" link element found matching '
-                    + 'stored XPATH.')
-            return False
-        except WebDriverException:
-            print('Error failed to navigate to "Lists" page.')
-            return False
-
-    print('Trying to open "Lists" settings...')
-    try:
-        settings_link = drv.find_element_by_xpath(
-                        WISHLISTS_SETTINGS_LINK_XPATH)
-        settings_link.click()
-        print('Success!')
-    except NoSuchElementException:
-        print('Error: No "Lists" settings button found matching'
-                + 'stored XPATH.')
-        return False
-    except ElementNotVisibleException:
-        print('Error: "Lists" settings button not visible.')
-        return False
-    except WebDriverException:
-        print('Unknown error in finding or clicking "Lists"'
-                                    + 'settings button.')
-        return False
-
-    print('Trying to select "Shopping list" as default...')
-    try:
-        # MAY NEED TO ASK SELENIUM TO WAIT UNTIL SELECT IS VISIBLE
-        shopping_list_default_select = drv.find_element_by_xpath(
-                            WISHLISTS_SHOPPING_DEFAULT_SELECT_XPATH)
-        shopping_list_default_select.click()
-        print('Success!')
-    except NoSuchElementException:
-        print('Error: No "Shopping list" select found matching '
-                                            + 'stored XPATH.')
-        return False
-    except ElementNotVisibleException:
-        print('Error: "Shopping list" select not visible.')
-        return False
-    except WebDriverException:
-        print('Unknown error in finding or clicking "Shopping list"'
-                                                    + ' select.')
-        return False
-
-    print('Trying to submit chanes to settings...')
-    try:
-        settings_submit_button = drv.find_element_by_xpath(
-                            WISHLISTS_SETTINGS_SUMBIT_BUTTON_XPATH)
-        settings_submit_button.click()
-        print('Success!')
-    except NoSuchElementException:
-        print('Error: No "submit" button found matching stored XPATH.')
-        return False
-    except ElementNotVisibleException:
-        print('Error: "submit" button not visible.')
-        return False
-    except WebDriverException:
-        print('Unknown error in finding or clicking "submit" button.')
-        return False
-    return True
-'''
