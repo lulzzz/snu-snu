@@ -101,6 +101,20 @@ def get_driver(user_agent = USER_AGENTS['Chrome 57.0 Win10'],
     display = Display(visible=0, size=(width, height))
     display.start()
     # Chrome seems to be automatically assigned to the virtual display
+    # this may be done by a display manager in desktop setups
+    # May require manaul assignment in server/Docker setups
+    options = Options()
+    options.add_argument("user-agent=" + user_agent)
+    driver = webdriver.Chrome(chrome_options=options)
+    return driver
+
+def get_driver_no_xvfb(user_agent = USER_AGENTS['Chrome 57.0 Win10'],
+                height=900, width=1440):
+    """
+    Returns a ChromeDriver instance running in headless mode.
+    Intended to be used with Docker image:
+    yukinying/chrome-headless-browser
+    """
     options = Options()
     options.add_argument("user-agent=" + user_agent)
     driver = webdriver.Chrome(chrome_options=options)
