@@ -51,3 +51,4 @@ PRICE_SPAN_CLASS = 'price'
 MORE_RESULTS_BUTTON_ID = 'ysMoreResults'
 MORE_RESULTS_LINK_XPATH = '//*[@id="main-body"]/table/tbody/tr/td[2]/div[1]/table[2]/tbody/tr[1]/td/table/tbody/tr/td[2]/span/a[2]'
 PREVIOUS_RESULTS_BOTTON_ID = 'ysPrevResults'
+
