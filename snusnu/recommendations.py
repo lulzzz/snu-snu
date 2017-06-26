@@ -140,7 +140,7 @@ def get_recommendations(drv,
             price_list[0] = '£'
             price = ''.join(price_list)
             prices_text_stripped.append(price)
-            print('Stripping HTML...\n' + price)
+            #print('Stripping HTML...\n' + price)
         for n in names_text_stripped:
             scraped_names.append(n)
         for i in image_data:
