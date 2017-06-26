@@ -130,8 +130,8 @@ def get_recommendations(drv,
         prices_text_stripped = []
         i = 0
         for p in prices_text:
-            print(str(('Product ' + str(i) + ' price: ' + p), 
-                                                    'utf-8'))
+            message_string = 'Product ' + str(i) + ' price: ' + p
+            print(str(message_string, 'utf-8'))
             price = p.replace('<b>', '')
             price = price.replace('</b>', '')
             price_list = list(price)
