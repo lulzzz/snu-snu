@@ -46,7 +46,7 @@
 	"Society, Politics & Philosophy":{},
 	"Sports, Hobbies & Games":{},
 	"Travel & Holiday":{},
-	"Young Adult":{},
+	"Young Adult":{}
 	}
 "Car & Motorbike":
 	{
@@ -63,7 +63,7 @@
 	"Oils & Fluids":{},
 	"Paintwork":{},
 	"Transporting & Storage":{},
-	"Tools & Equipment":{},
+	"Tools & Equipment":{}
 	},
 "CDs & Vinyl":
 	{
@@ -87,35 +87,156 @@
 	"Reggae":{},
 	"Rock":{},
 	"Soundtracks":{},
-	"World Music":{},
+	"World Music":{}
 	},
 "Clothing":
 	{
-	"Women":
-		{
-		"Accessories":{},
-		"Blouses & Shirts":{},
+	"Women":,
+		{,
+		"Accessories":,
+			{,
+			"Arm Warmers & Muffs":{},
+			"Belt Buckles":{},
+			"Belts":{},
+			"Braces":{},
+			"Earmuffs":{},
+			"Eyewear & Accessories":{},
+			"Gloves & Mittens":{},
+			"Handkerchiefs":{},
+			"Hats & Caps":{},
+			"Headbands":{},
+			"Kidney Warmers":{},
+			"Scarf, Hat & Glove Sets":{},
+			"Scarves & Wraps":{}
+			}
+		"Blouses & Shirts":
+			{
+			"Coats":{},
+			"Gilets":{},
+			"Jackets":{},
+			},
 		"Coats & Jackets":{},
 		"Dresses":{},
 		"Dungarees":{},
 		"Hoodies":{},
 		"Jeans":{},
-		"Jumpsuits & Playsuits":{},
-		"Knitwear":{},
+		"Jumpsuits & Playsuits":{}
+		"Knitwear":
+			{
+			"Cardigans":{},
+			"Jumpers":{},
+			"Ponchos & Capes":{},
+			"Shrugs":{},
+			"Tank Tops":{},
+			"Twin-Sets":{},
+			},
 		"Leggings":{},
-		"Lingerie & Underwear":{},
-		"Maternity":{},
-		"Nightwear":{},
+		"Lingerie & Underwear":
+			{
+			"Accessories":{},
+			"Baby Dolls":{},
+			"Bodysuits":{},
+			"Bras":{},
+			"Bustiers & Corsets":{},
+			"Camisoles & Vests":{},
+			"Chemises & Negligees":{},
+			"Garters & Suspenders":{},
+			"Hold-up Stockings":{},
+			"Knickers":{},
+			"Lingerie Sets":{},
+			"Shapewear":{},
+			"Slips":{},
+			"Suspender Stockings":{},
+			"Thermal":{},
+			},
+		"Maternity":
+			{
+			"Blouses & Shirts":{},
+			"Dresses":{},
+			"Hoodies":{},
+			"Jeans":{},
+			"Knitwear":{},
+			"Leggings":{},
+			"Lingerie & Underwear":{},
+			"Nightwear":{},
+			"Outerwear":{},
+			"Overalls":{},
+			"Shorts":{},
+			"Skirts":{},
+			"Suiting & Blazers":{},
+			"Sweatshirts":{},
+			"Swim":{},
+			"Tops & Tees":{},
+			"Trousers":{},
+			},
+		"Nightwear":
+			{
+			"Bathrobes":{},
+			"Bottoms":{},
+			"Dressing Gowns":{},
+			"Nightdresses & Nightshirts":{},
+			"Onesies":{},
+			"Pyjama Sets":{},
+			"Tops":{}
+			},
 		"Shorts":{},
 		"Skirts":{},
 		"Snow & Rainwear":{},
-		"Socks & Tights":{},
-		"Sportswear":{},
-		"Suits & Blazers":{},
+		"Socks & Tights":
+			{
+			"Athletic Socks":{},
+			"Hold-up Stockings":{},
+			"Knee-High Socks":{},
+			"Leg Warmers":{},
+			"Liners & Ankle Socks":{},
+			"Sock Slippers":{},
+			"Socks":{},
+			"Suspender Stockings":{},
+			"Tights":{}
+			},
+		"Sportswear":,
+			{
+			"Athletic Socks":{},
+			"Base Layers":{},
+			"Gilets":{},
+			"Hoodies":{},
+			"Knickers & Bras":{},
+			"Knitwear":{},
+			"Sets":{},
+			"Shirts & Tees":{},
+			"Shorts":{},
+			"Skirts":{},
+			"Sweatshirts":{},
+			"Tights & Leggings":{},
+			"Track Jackets":{},
+			"Tracksuits":{},
+			"Trousers":{}
+			},
+		"Suits & Blazers":,
+			{
+			"Dress Suits":{},
+			"Skirt Suits":{},
+			"Suit Jackets & Blazers":{},
+			"Trouser Suits":{},
+			"Waistcoats":{}
+			},
 		"Sweatshirts":{},
-		"Swimwear":{},
-		"Tops & T-Shirts":{},
-		"Trousers":{}		
+		"Swimwear":
+			{
+			"Bikinis":{},,
+			"Cover-Ups & Sarongs":{},
+			"One Pieces":{},
+			"Shorts":{},
+			"Tankinis":{}
+			},
+		"Tops & T-Shirts":
+			{
+			"Long Sleeve Tops":{},
+			"Polos":{},
+			"T-Shirts":{},
+			"Vest Tops":{}
+			},
+		"Trousers":{}
 		},
 	"Men":
 		{
@@ -131,23 +252,171 @@
 			"Scarves":{},
 			"Ties":{},
 			},
-		"Coats & Jackets":{},
-		"Dungarees":{},
-		"Hoodies":{},
-		"Jeans":{},
-		"Knitwear":{},
-		"Nightwear":{},
+		"Coats & Jackets":
+			{
+			"Coats":{}
+			"Gilets":{}
+			"Jackets":{}
+			},
+			"Dungarees":{},
+			"Hoodies":{},
+			"Jeans":{},
+			"Knitwear":
+			{
+			"Cardigans":{},
+			"Gilets":{},
+			"Jumpers":{},
+			"Tank Tops":{},
+			},
+		"Nightwear":,
+			{,
+			"Bathrobes":{},
+			"Dressing Gowns & Kimonos":{},
+			"Onesies":{},
+			"Pyjama Bottoms":{},
+			"Pyjama Sets":{},
+			"Pyjama Tops":{}
+			},
 		"Shirts":{},
 		"Shorts":{},
 		"Snow & Rainwear":{},
-		"Socks":{},
-		"Sportswear":{},
-		"Suits & Blazers":{},
-		"Sweatshirts":{},
-		"Swimwear":{},
-		"Tops & T-Shirts":{},
+		"Socks":
+			{
+			"Athletic Socks":{},
+			"Calf Socks":{},
+			"Knee-High Socks":{},
+			"Liners & Ankle Socks":{}
+			},
+		"Sportswear":
+			{
+			"Athletic Socks":{},
+			"Base Layers":{},
+			"Gilets":{},
+			"Hoodies":{},
+			"Knitwear":{},
+			"Sets":{},
+			"Shirts & Tees":{},
+			"Shorts":{},
+			"Sweatshirts":{},
+			"Tights & Leggings":{},
+			"Track Jackets":{},
+			"Tracksuits":{},
+			"Trousers":{},
+			"Underwear":{}
+			}
+		"Suits & Blazers":,
+			{
+			"Blazers":{},
+			"Suit Jackets":{},
+			"Suit Trousers":{},
+			"Suits":{},
+			"Tuxedo Jackets":{},
+			"Tuxedo Trousers":{},
+			"Tuxedos":{},
+			"Waistcoats":{}
+			},
+		"Sweatshirts":{},,
+		"Swimwear":
+			{
+			"Briefs":{},
+			"Shorts & Trunks":{}
+			},
+		"Tops & T-Shirts":
+			{
+			"Long Sleeve Tops":{},
+			"Polos":{},
+			"T-Shirts":{},
+			"Vests":{}
+			},
 		"Trousers":{},
-		"Underwear":{}
+		"Underwear":
+			{
+			"Boxers":{},
+			"Briefs":{},
+			"G-Strings & Thongs":{},
+			"Sets":{},
+			"Thermal":{},
+			"Trunks":{},
+			"Vests":{}
+			}
 		}
+	}
+"DVD & Blu-ray:Genre":
+	{
+	"Action & Adventure":{},
+	"Adult":{},
+	"Animation":{},
+	"Anime":{},
+	"Bollywood":{},
+	"Children & Family":{},
+	"Comedy":{},
+	"Crime":{},
+	"Documentary":{},
+	"Drama":{},
+	"Exercise & Fitness":{},
+	"Fantasy":{},
+	"Gay, Lesbian & Transgender":{},
+	"Historical":{},
+	"Horror":{},
+	"Military & War":{},
+	"Music Video & Concert":{},
+	"Musical":{},
+	"Performing Arts":{},
+	"Reality TV":{},
+	"Romance":{},
+	"Science Fiction":{},
+	"Soap Opera":{},
+	"Special Interest":{},
+	"Sport":{},
+	"Thriller":{},
+	"Western":{},
+	"World Cinema":{},
+	},
+"Software":
+	{
+	"Business & Office":{},
+	"Children's Software":{},
+	"Photo & Design":{},
+	"Home & Hobbies":{},
+	"Home Computing":{},
+	"Languages":{},
+	"Operating Systems":{},
+	"Programming & Web Development":{},
+	"Security & Maintenance":{},
+	"Student Software":{},
+	"System Builder (OEM) Software":{},
+	"Video & Music":{}
+	},
+"Toys & Games":
+	{
+	"Advent Calendars":{},
+	"Arts & Crafts":{},
+	"Baby & Toddler Toys":{},
+	"Building & Construction Toys":{},
+	"Chests & Toy Boxes":{},
+	"Cosmetics & Jewellery":{},
+	"Die-Cast & Toy Vehicles":{},
+	"Dolls & Accessories":{},
+	"Educational Toys":{},
+	"Electronic Toys":{},
+	"Fancy Dress":{},
+	"Figures & Playsets":{},
+	"Fingerboards, Finger Bikes & Accessories":{},
+	"Games":{},
+	"Hobbies":{},
+	"Jigsaws & Puzzles":{},
+	"Keyrings":{},
+	"Magic & Practical Jokes":{},
+	"Mobile Phone Charms":{},
+	"Money Banks":{},
+	"Musical Toy Instruments":{},
+	"Party Supplies":{},
+	"Pretend Play":{},
+	"Puppets & Puppet Theatres":{},
+	"Real-Food Appliances":{},
+	"Room Tidies":{},
+	"Schoolbags & Backpacks":{},
+	"Soft Toys":{},
+	"Sports Toys & Outdoor":{}
 	}
 }
