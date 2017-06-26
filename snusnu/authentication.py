@@ -15,12 +15,14 @@ def sign_in(drv, username, password):
     already_signed_in = True;
 
     try:
-        sign_out_link = drv.find_element_by_xpath(SIGN_OUT_LINK_XPATH_UK)
-        print('Your drv appears to be signed in already.')
+        sign_out_link = drv.find_element_by_xpath(
+                                                SIGN_OUT_LINK_XPATH_UK)
+        print('Your driver appears to be signed in already.')
         print('Signing out...')
         drv.get(str(sign_out_link.get_attribute('href')))
     except NoSuchElementException:
         already_signed_in = False;
+        print("Your driver isn't signed in. Proceeding to sign in...")
 
     if not already_signed_in:
         # attempt to locate an element that links to the sign-in page
@@ -45,9 +47,10 @@ def sign_in(drv, username, password):
                 print(''.join(error_message))
                 if len(SIGN_IN_XPATHS_UK) == i + 1:
                     error_message = ['All sign-in links failed! \n']
-                    error_message.append('This script will not function ')
-                    error_message.append('until its Xpath list matches ')
-                    error_message.append('the current Amazon homepage.')
+                    error_message.append('This script will not  ')
+                    error_message.append('function until its Xpath ')
+                    error_message.append('list matches the current ')
+                    error_message.append('Amazon homepage.')
                     print(''.join(error_message))
                     return False
 
@@ -55,7 +58,8 @@ def sign_in(drv, username, password):
     # locate sign-in elements
     try:
         email_field = drv.find_element_by_xpath(EMAIL_FIELD_XPATH_UK)
-        password_field = drv.find_element_by_xpath(PASSWORD_FIELD_XPATH_UK)
+        password_field = drv.find_element_by_xpath(
+                                                PASSWORD_FIELD_XPATH_UK)
     except NoSuchElementException:
         print("Unable to locate email/password fields!"
             + " Stored Xpaths do not match webpage.")
@@ -67,9 +71,10 @@ def sign_in(drv, username, password):
     email_field.send_keys(username)
     password_field.send_keys(password)
     try:
-        sign_in_button = drv.find_element_by_xpath(SIGN_IN_BUTTON_XPATH_UK)
-        print('Loading home page...')
+        sign_in_button = drv.find_element_by_xpath(
+                                                SIGN_IN_BUTTON_XPATH_UK)
         sign_in_button.click()
+        print('Loading home page...')
     except NoSuchElementException:
         print('Loading home page...')
         password_field.send_keys(Keys.ENTER)
