@@ -21,7 +21,7 @@ def get_recommendations_json(driver,
     json_recommendations = []
     for r in recommendations:
         json_recommendations.append(json.dumps(r, 
-                        object_hook=data.parse_product_description))
+                        cls=data.ProductDescriptionEncoder))
     return json_recommendations
 
 def get_recommendations(drv,
