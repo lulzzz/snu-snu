@@ -101,7 +101,7 @@ def get_recommendations(drv,
                 i += 1
         else:
             image_data = image_urls
-`
+
         print ('Selenium found ' + str(len(images))
             +' product image elements')
         prices = drv.find_elements_by_class_name(PRICE_SPAN_CLASS)
