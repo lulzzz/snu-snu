@@ -10,6 +10,19 @@ from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import WebDriverException
 from selenium import webdriver
 
+def ger_recommendations_json(driver,
+                            number_of_recommendations,
+                            base64_images = False)
+    """ Wrapper for get_recommendations that returns JSON"""
+    recommendations = get_recommendations(driver,
+                                          number_of_recommendations,
+                                          base64_images)
+    json_recommendations = []
+    for r in recommendation:
+        json_recommendations.append(json.dumps(r, 
+                        object_hook=data.parse_product_description))
+    return json_recommendations
+
 def get_recommendations(drv,
                         number_of_recommendations,
                         base64_images= False):
