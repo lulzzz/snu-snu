@@ -87,7 +87,7 @@ def get_recommendations(drv,
         for i in images:
             image_urls.append(i.get_attribute('src'))
         image_data = []
-        print('The statement: I will return base64 imgs is: ' + base64_images)
+        print('The statement: I will return base64 imgs is: ' + str(base64_images))
         if base64_images:
             i = 0
             for u in image_urls:
