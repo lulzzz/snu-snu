@@ -12,7 +12,7 @@ from selenium import webdriver
 
 def ger_recommendations_json(driver,
                             number_of_recommendations,
-                            base64_images = False)
+                            base64_images = False):
     """ Wrapper for get_recommendations that returns JSON"""
     recommendations = get_recommendations(driver,
                                           number_of_recommendations,
