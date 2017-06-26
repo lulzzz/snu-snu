@@ -18,7 +18,7 @@ def get_recommendations_json(driver,
                                           number_of_recommendations,
                                           base64_images)
     json_recommendations = []
-    for r in recommendation:
+    for r in recommendations:
         json_recommendations.append(json.dumps(r, 
                         object_hook=data.parse_product_description))
     return json_recommendations
