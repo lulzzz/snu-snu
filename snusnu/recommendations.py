@@ -83,7 +83,8 @@ def get_recommendations(drv,
                                                 #precaution v
     while recommendations_scraped < (number_of_recommendations + 1):
         names = drv.find_elements_by_xpath(PARTIAL_PRODUCT_NAME_XPATH)
-        print ('Selenium found ' + str(len(names)) + ' product name elements')
+        print ('Selenium found ' + str(len(names)) 
+                        + ' product name elements')
         names_text = []
         for n in names:
             names_text.append(n.get_attribute('innerHTML'))
@@ -101,7 +102,6 @@ def get_recommendations(drv,
         for i in images:
             image_urls.append(i.get_attribute('src'))
         image_data = []
-        print('The statement: I will return base64 imgs is: ' + str(base64_images))
         if base64_images:
             i = 0
             for u in image_urls:
