@@ -19,13 +19,6 @@ from selenium.common.exceptions import StaleElementReferenceException
 # Controls wither set_shopping_list_default_product_view is called
 DEFAULT_WISHLIST_SET = False
 
-class SearchCategory():
-    '''Represents a search category. Currently only used in
-        Django because of lack fo dictionaary support in templates.'''
-    def __init__(self, index, name):
-        self.index = index
-        self.name = name
-
 def get_product_link(product_element):
     """Returns the link element inside a product listing element"""
     try:
