@@ -102,6 +102,8 @@ def get_recommendations(drv,
         for i in images:
             image_urls.append(i.get_attribute('src'))
         image_data = []
+        image_data = []
+        image_data = []
         if base64_images:
             i = 0
             for u in image_urls:
