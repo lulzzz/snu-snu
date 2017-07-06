@@ -23,7 +23,7 @@ class SearchCategory():
     '''Represents a search category. Currently only used in
         Django because of lack fo dictionaary support in templates.'''
     def __init__(self, index, name):
-        self.index = indes
+        self.index = index
         self.name = name
 
 def get_product_link(product_element):
