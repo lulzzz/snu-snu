@@ -19,6 +19,13 @@ from selenium.common.exceptions import StaleElementReferenceException
 # Controls wither set_shopping_list_default_product_view is called
 DEFAULT_WISHLIST_SET = False
 
+class SearchCategory():
+    '''Represents a search category. Currently only used in
+        Django because of lack fo dictionaary support in templates.'''
+    def __init__(self, index, name):
+        self.index = indes
+        self.name = name
+
 def get_product_link(product_element):
     """Returns the link element inside a product listing element"""
     try:
@@ -59,7 +66,7 @@ def search(drv, search_term, category_index = 0):
         search_field = drv.find_element_by_xpath(SEARCH_FIELD_XPATH)
     except NoSuchElementException:
         print('Stored Xpath does not match search text box'
-				+' element on page.')
+                +' element on page.')
         print('Aborting search...')
         return False
     search_field.send_keys(search_term)
@@ -69,6 +76,7 @@ def search(drv, search_term, category_index = 0):
     except NoSuchElementException:
         search_field.send_keys(keys.ENTER)
     return True
+
 def get_category_names(drv):
     '''
     Returns a list of string corresponding to Amazon's category select.
@@ -82,7 +90,7 @@ def get_category_names(drv):
         category_names.append(
             cat_options[i].get_attribute('innerHTML').replace('&amp;','&'))
     return category_names
-    
+
 def choose_category(drv):
     '''
     Provides a command-line interface for choosing a category from
@@ -216,7 +224,7 @@ def set_shopping_list_default_product_view(drv):
     print('Attempting to set default wishlist to "shopping list"...')
     try:
         shopping_list_select = drv.find_element_by_id(
-								SHOPPING_LIST_SELECT_ID)
+                                SHOPPING_LIST_SELECT_ID)
         shopping_list_select.click()
     except NoSuchElementException:
         print('Failed to select "shopping list". No button on page '
@@ -230,10 +238,10 @@ def set_shopping_list_default_product_view(drv):
         list_submit.click()
     except NoSuchElementException:
         print('Failed to find "list selection submit". No button on '
-							+ 'page found matching stored element id.')
+                            + 'page found matching stored element id.')
     except ElementNotVisibleException:
         print('Failed to click "list selection submit". '
-							+ 'Button is not visible.')
+                            + 'Button is not visible.')
     global DEFAULT_WISHLIST_SET
     DEFAULT_WISHLIST_SET = True
 
