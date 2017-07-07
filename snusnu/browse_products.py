@@ -160,6 +160,7 @@ def view_items(drv, search_string, number_products, category,
                 print('Item page timed out. ' +
                         'Returning to product page...')
                 drv.get(product_page_url)
+            current_result += 1
         else:
             next_page_links = drv.find_elements_by_id(NEXT_PAGE_LINK_ID)
             if len(next_page_links) > 0:
@@ -206,7 +207,6 @@ def view_items(drv, search_string, number_products, category,
                     end_string.append(' products viewed.')
                     print(''.join(end_string))
                     completed = True
-        current_result += 1
         if products_viewed_count == number_products:
             completed = True
     return {'products viewed'       :   products_viewed_count,
