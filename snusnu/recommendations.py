@@ -9,20 +9,6 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import WebDriverException
 from selenium import webdriver
-import json
-
-def get_recommendations_json(driver,
-                            number_of_recommendations,
-                            base64_images = False):
-    """ Wrapper for get_recommendations that returns JSON"""
-    recommendations = get_recommendations(driver,
-                                          number_of_recommendations,
-                                          base64_images)
-    json_recommendations = []
-    for r in recommendations:
-        json_recommendations.append(json.dumps(r, 
-                        cls=data.ProductDescriptionEncoder))
-    return json_recommendations
 
 def get_recommendations(drv,
                         number_of_recommendations,
@@ -83,8 +69,7 @@ def get_recommendations(drv,
                                                 #precaution v
     while recommendations_scraped < (number_of_recommendations + 20):
         names = drv.find_elements_by_xpath(PARTIAL_PRODUCT_NAME_XPATH)
-        print ('Selenium found ' + str(len(names)) 
-                        + ' product name elements')
+        print ('Selenium found ' + str(len(names)) + ' product name elements')
         names_text = []
         for n in names:
             names_text.append(n.get_attribute('innerHTML'))
@@ -102,8 +87,7 @@ def get_recommendations(drv,
         for i in images:
             image_urls.append(i.get_attribute('src'))
         image_data = []
-        image_data = []
-        image_data = []
+
         if base64_images:
             i = 0
             for u in image_urls:
@@ -132,17 +116,14 @@ def get_recommendations(drv,
         prices_text_stripped = []
         i = 0
         for p in prices_text:
-            #message_string = 'Product ' + str(i) + ' price: ' + p
-            #message_array = bytearray()
-            #message_array.extend(map(ord, message_string))
-            #print(str(message_array, 'utf-8'))
+            print('Product ' + str(i) + ' price: ' + p)
             price = p.replace('<b>', '')
             price = price.replace('</b>', '')
             price_list = list(price)
             price_list[0] = '£'
             price = ''.join(price_list)
             prices_text_stripped.append(price)
-            #print('Stripping HTML...\n' + price)
+            print('Stripping HTML...\n' + price)
         for n in names_text_stripped:
             scraped_names.append(n)
         for i in image_data:
