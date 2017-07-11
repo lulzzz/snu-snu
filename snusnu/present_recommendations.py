@@ -33,10 +33,15 @@ def make_html(product_descriptions, img_dir = 'img', number_of_columns = 4):
     html.append('</tr></table></body></html>')
     return ''.join(html)
 
-def make_html_file():
+def make_html_file_terminal():
     descriptions = data.product_descriptions_from_file(sys.argv[2])
     html = make_html(descriptions)
     data.string_to_file(html, sys.argv[3])
+    
+def make_html_file(path_to_descriptions, path_to_html):
+    descriptions = data.product_descriptions_from_file(path_to_descriptions)
+    html = make_html(descriptions)
+    data.string_to_file(html, path_to_html)
 
 # Dictionary of dictionaries defining command arguments accepted by snu-snu
 ARGS = {'html':
@@ -45,7 +50,7 @@ ARGS = {'html':
     'required args' :
     '   1. the command (i.e. "html") 2. path to source file (e.g. "in.json")'
     + '\n   3. path to destination file (eg. "out.html")',
-    'function' : make_html_file}}
+    'function' : make_html_file_terminal}}
 
 def initialise():
     """
@@ -83,7 +88,6 @@ user-friendly output from JSON lists of ProductDescriptons.\n""")
     if proceed_with_args:
         ARGS[sys.argv[1]]['function']()
     else:
-        print('Quitting...')
-        quit()
+        print('Please quit...')
 
 initialise()

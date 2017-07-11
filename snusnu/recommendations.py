@@ -67,7 +67,7 @@ def get_recommendations(drv,
     scraped_prices = []
     recommendations_scraped = 0
                                                 #precaution v
-    while recommendations_scraped < (number_of_recommendations + 1):
+    while recommendations_scraped < (number_of_recommendations + 20):
         names = drv.find_elements_by_xpath(PARTIAL_PRODUCT_NAME_XPATH)
         print ('Selenium found ' + str(len(names)) + ' product name elements')
         names_text = []
@@ -101,7 +101,7 @@ def get_recommendations(drv,
                 i += 1
         else:
             image_data = image_urls
-`
+
         print ('Selenium found ' + str(len(images))
             +' product image elements')
         prices = drv.find_elements_by_class_name(PRICE_SPAN_CLASS)

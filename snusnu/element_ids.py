@@ -1,5 +1,6 @@
 # General
 AMAZON_UK_URL = 'https://www.amazon.co.uk'
+AMAZON_US_URL = 'https://www.amazon.com'
 NAV_LOGO_ID = 'nav-logo'
 
 # Sign-in related:
@@ -30,6 +31,7 @@ MORE_RESULTS_LINK_XPATH = '//*[@id="quartsPagelet"]/a'
 
 # Product page related:
 ADD_TO_LIST_BUTTON_ID = 'add-to-wishlist-button-submit'
+ADD_WATCHLIST_BUTTON_XPATH = '//*[@id="dv-action-box"]/form/span/input'
 SHOPPING_LIST_SELECT_ID = 'WLNEW_newsl_section'
 WISH_LIST_SELECT_ID = 'WLNEW_newwl_section'
 LIST_SELECTION_SUBMIT_ID = 'WLNEW_valid_submit'

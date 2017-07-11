@@ -6,12 +6,12 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 
-IMPLICIT_WAIT = 3; # seconds for the drv to wait for elements to load
+IMPLICIT_WAIT = 40; # seconds for the drv to wait for elements to load
 # elements ids used on Amazon.co.uk home page that link to sign-in page
 
-def sign_in(drv, username, password):
+def sign_in(drv, username, password, amazon_url = AMAZON_UK_URL):
     drv.implicitly_wait(IMPLICIT_WAIT)
-    drv.get('https://www.amazon.co.uk/')
+    drv.get(amazon_url)
     already_signed_in = True;
 
     try:

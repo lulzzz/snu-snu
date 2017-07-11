@@ -16,6 +16,8 @@ from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import StaleElementReferenceException
 
+IMPLICIT_WAIT = 3; # seconds for the driver to wait for elements to load
+
 # Controls wither set_shopping_list_default_product_view is called
 DEFAULT_WISHLIST_SET = False
 
@@ -35,13 +37,15 @@ def go_home(drv):
     except NoSuchElementException:
         drv.get(AMAZON_UK_URL)
 
-def search(drv, search_term, category_index = 0):
+def search(drv, search_term, category_index = 0, amazon_url = AMAZON_UK_URL):
     '''
     Initiates a search in the main Amazon search field, with an optional
     argument specifiying a product category.
     Returns True if successful.
     '''
-    drv.get(AMAZON_UK_URL)
+
+    drv.get(amazon_url)
+    
     print('Searching for "' + search_term + '"...')
     use_custom_category = False
     if not category_index == 0:
@@ -59,7 +63,7 @@ def search(drv, search_term, category_index = 0):
         search_field = drv.find_element_by_xpath(SEARCH_FIELD_XPATH)
     except NoSuchElementException:
         print('Stored Xpath does not match search text box'
-				+' element on page.')
+                +' element on page.')
         print('Aborting search...')
         return False
     search_field.send_keys(search_term)
@@ -111,9 +115,14 @@ def choose_category(drv):
                                 + str(len(cat_names)-1))
     return cat_index
 
-def view_items(drv, search_string, number_products, category,
-                                            item_function = None):
-    search(drv, search_string, category)
+def view_items( drv, 
+                search_string, 
+                number_products, 
+                category,
+                item_function = None,
+                amazon_url = AMAZON_UK_URL):
+    drv.implicitly_wait(IMPLICIT_WAIT)
+    search(drv, search_string, category, amazon_url)
     drv.set_page_load_timeout(30)
     current_result = 0
     products_viewed_count = 0
@@ -216,7 +225,7 @@ def set_shopping_list_default_product_view(drv):
     print('Attempting to set default wishlist to "shopping list"...')
     try:
         shopping_list_select = drv.find_element_by_id(
-								SHOPPING_LIST_SELECT_ID)
+                                SHOPPING_LIST_SELECT_ID)
         shopping_list_select.click()
     except NoSuchElementException:
         print('Failed to select "shopping list". No button on page '
@@ -230,10 +239,10 @@ def set_shopping_list_default_product_view(drv):
         list_submit.click()
     except NoSuchElementException:
         print('Failed to find "list selection submit". No button on '
-							+ 'page found matching stored element id.')
+                            + 'page found matching stored element id.')
     except ElementNotVisibleException:
         print('Failed to click "list selection submit". '
-							+ 'Button is not visible.')
+                            + 'Button is not visible.')
     global DEFAULT_WISHLIST_SET
     DEFAULT_WISHLIST_SET = True
 
@@ -242,8 +251,8 @@ def add_item_list(drv):
     Assumes driver is on a product page. Adds the product to 
     the shopping list.
     """
-    print('Attempting to add product to "shopping list"...')
     try:
+        print('Attempting to add product to "shopping list"...')
         list_add_button = drv.find_element_by_id(ADD_TO_LIST_BUTTON_ID)
         list_add_button.click()
         global DEFAULT_WISHLIST_SET
@@ -259,6 +268,22 @@ def add_item_list(drv):
                 + 'List add button is not visible.')
     except WebDriverException:
         print('Unknown error. Failed to add item to wishlist.')
+        
+    try:
+        print('Attempting to add video to "watchlist"...')
+        list_add_button = drv.find_element_by_xpath(ADD_WATCHLIST_BUTTON_XPATH)
+        list_add_button.click()
+        print('Sucessful.')
+        return True
+    except NoSuchElementException:
+        print('Failed to add video to list. No button on page found '
+                                + 'matching stored element ids.')
+    except ElementNotVisibleException:
+        print('Failed to add video to list. '
+                + 'List add button is not visible.')
+    except WebDriverException:
+        print('Unknown error. Failed to add video to watchlist.')
+        
     return False
 
 '''
