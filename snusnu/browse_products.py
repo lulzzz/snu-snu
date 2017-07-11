@@ -73,6 +73,7 @@ def search(drv, search_term, category_index = 0, amazon_url = AMAZON_UK_URL):
     except NoSuchElementException:
         search_field.send_keys(keys.ENTER)
     return True
+
 def get_category_names(drv):
     '''
     Returns a list of string corresponding to Amazon's category select.
@@ -86,7 +87,7 @@ def get_category_names(drv):
         category_names.append(
             cat_options[i].get_attribute('innerHTML').replace('&amp;','&'))
     return category_names
-    
+
 def choose_category(drv):
     '''
     Provides a command-line interface for choosing a category from
@@ -168,6 +169,7 @@ def view_items( drv,
                 print('Item page timed out. ' +
                         'Returning to product page...')
                 drv.get(product_page_url)
+            current_result += 1
         else:
             next_page_links = drv.find_elements_by_id(NEXT_PAGE_LINK_ID)
             if len(next_page_links) > 0:
@@ -214,7 +216,6 @@ def view_items( drv,
                     end_string.append(' products viewed.')
                     print(''.join(end_string))
                     completed = True
-        current_result += 1
         if products_viewed_count == number_products:
             completed = True
     return {'products viewed'       :   products_viewed_count,

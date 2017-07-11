@@ -27,6 +27,14 @@ class ProductDescription():
         self.name = name
         self.price = price
         self.image = image
+    def ___str___(self):
+        desc = ['Name: ']
+        desc.append(self.name)
+        desc.append(', Price: ')
+        desc.append(self.price)
+        desc.append('Image/image-url: ')
+        desc.append(self.image)
+        return ''.join(desc)
 
 class Command():
     '''Used as a parent class for all commands and
