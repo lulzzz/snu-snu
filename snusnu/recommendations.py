@@ -21,7 +21,7 @@ def get_recommendations_json(driver,
     for r in recommendations:
         json_recommendations.append(json.dumps(r, 
                         cls=data.ProductDescriptionEncoder))
-return json_recommendations
+    return json_recommendations
 
 
 def get_recommendations(drv,
