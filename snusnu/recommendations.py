@@ -9,6 +9,7 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import WebDriverException
 from selenium import webdriver
+import json
 
 def get_recommendations_json(driver,
                             number_of_recommendations,
