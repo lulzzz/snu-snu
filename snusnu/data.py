@@ -23,9 +23,8 @@ product_actions = { 0 : 'search for products',
                     2 : 'add products to shopping list'}
 
 class ProductDescription():
-    def __init__(self, name, price, image = None):
+    def __init__(self, name, image = None):
         self.name = name
-        self.price = price
         self.image = image
 
 class Command():
@@ -65,7 +64,6 @@ class ProductDescriptionEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, ProductDescription):
             return {'Name' :  (obj.name),
-                    'Price' : (obj.price),
                     'Image' : (obj.image)}
         return json.JSONEncoder.default(self, obj)
 
@@ -86,10 +84,9 @@ def parse_product_description(obj):
     """
     Parses a JSON representation of a ProductDescription
     """
-    if 'Price' in obj:  # Rather than identifying each
+    if 'Name' in obj:  # Rather than identifying each
                         # ProductDescription as such
-        return ProductDescription(obj['Name'], obj['Price'],
-                                               obj['Image'])
+        return ProductDescription(obj['Name'], obj['Image'])
 
 def product_commands_to_file(commands, path):
     try:

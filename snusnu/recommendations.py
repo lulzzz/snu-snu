@@ -79,7 +79,6 @@ def get_recommendations(drv,
     # Scrape the recommendations
     scraped_names = []
     scraped_images = []
-    scraped_prices = []
     recommendations_scraped = 0
                                                 #precaution v
     while recommendations_scraped < (number_of_recommendations + 20):
@@ -119,32 +118,10 @@ def get_recommendations(drv,
 
         print ('Selenium found ' + str(len(images))
             +' product image elements')
-        prices = drv.find_elements_by_class_name(PRICE_SPAN_CLASS)
-        print ('Selenium found ' + str(len(prices))
-            +' product price elements')
-        prices_text = []
-        for p in prices:
-            prices_text.append(p.get_attribute('innerHTML'))
-        prices_text = keep_strings_matching(prices_text,['<b>', '</b>'])
-        print('Product price elements have been reduced in number to '
-                                            + str(len(prices_text)))
-        prices_text_stripped = []
-        i = 0
-        for p in prices_text:
-            print('Product ' + str(i) + ' price: ' + p)
-            price = p.replace('<b>', '')
-            price = price.replace('</b>', '')
-            price_list = list(price)
-            price_list[0] = '£'
-            price = ''.join(price_list)
-            prices_text_stripped.append(price)
-            print('Stripping HTML...\n' + price)
         for n in names_text_stripped:
             scraped_names.append(n)
         for i in image_data:
             scraped_images.append(i)
-        for p in prices_text_stripped:
-            scraped_prices.append(p)
         recommendations_scraped += len(names)
         # Navigate to next page of recommendations
         successful = False
@@ -181,6 +158,5 @@ def get_recommendations(drv,
     for i in range(number_of_recommendations):
         recommended_products.append(data.ProductDescription(
                                         scraped_names[i],
-                                        scraped_prices[i],
                                         scraped_images[i]))
     return recommended_products
