@@ -12,6 +12,8 @@ IMPLICIT_WAIT = 3; # seconds for the drv to wait for elements to load
 def sign_in(drv, username, password, amazon_url = AMAZON_UK_URL):
     drv.implicitly_wait(IMPLICIT_WAIT)
     drv.get(amazon_url)
+    print(drv.page_source.encode("utf-8"))
+
     already_signed_in = True;
 
     try:
