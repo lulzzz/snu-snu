@@ -3,13 +3,15 @@ A tool for 'training' the recommendation system used by the online retail giant 
 
 ##### Basic use
 
-- install the package.
+install the package:
 
          pip install git+https://github.com/simoncrowe/snusnu.git
-- Run your python interpreter. i.e.
+         
+Run your python interpreter. i.e.
 
          python3
-- Use the basic terminal interface
+         
+Use the basic terminal interface
 
          from snusnu import terminal
 
