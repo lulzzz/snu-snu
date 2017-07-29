@@ -20,7 +20,7 @@ Use the basic terminal interface
     1. Through interactive command line interface.
     1. Through JSON list of ProductCommand objects.
     1. When installed as a package, through function calls in other scripts.
-1. Generate JSON lists of ProductCommand objects based on NLP of arbitrary texts. *note* this functionality has been moved to https://github.com/nlp-frequency-analysis-snusnu
+1. Generate JSON lists of ProductCommand objects based on NLP of arbitrary texts. #note# this functionality has been moved to https://github.com/nlp-frequency-analysis-snusnu
 1. Serialise recommended products from all sources for later analysis.
 
 ##### Dependancies:
