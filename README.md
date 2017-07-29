@@ -2,11 +2,17 @@
 A tool for 'training' the recommendation system used by the online retail giant Amazon. This package is not also partly useable via the web application http://rars.online.
 
 ##### Basic use
+
 - install the package.
+
     pip install git+https://github.com/simoncrowe/snusnu.git
+
 - Run your python interpreter. i.e.
+
     python3
+
 - Use the basic terminal interface
+
    from snusnu import terminal
 
 ##### The tool is currently under development. It now emcompasses most of the following functionality although some is still incomplete:
