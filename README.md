@@ -1,9 +1,9 @@
-# snu-snu
+## snusnu
 A tool for 'training' the recommendation system used by the online retail giant Amazon. This package is not also partly useable via the web application http://rars.online.
 
-##### Basic use
+#### Basic use
 
-install the package:
+install the package
 
     pip install git+https://github.com/simoncrowe/snusnu.git
 Run your python interpreter. i.e.
@@ -21,7 +21,7 @@ Use the basic terminal interface
 1. Generate JSON lists of ProductCommand objects based on NLP of arbitrary texts. **Note:** the NLP part of this functionality has been moved to https://github.com/nlp-frequency-analysis-snusnu
 1. Serialise recommended products as JSON and present them as HTML for later analysis.
 
-##### Dependancies:
+#### Dependancies:
 - Selenium and ChromeDriver
 - Requests
 - Pillow
