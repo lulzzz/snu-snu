@@ -2,4 +2,3 @@
 include LICENSE
 
 # Include the data files?
-recursive-include snusnu/nltk_data *

@@ -31,7 +31,7 @@ setup(
  scrapes the resulting recommendations.""",
 
     # The project's main homepage.
-    url='https://github.com/sonicmower/snu-snu',
+    url='https://github.com/simoncrowe/snu-snu',
 
     # Author details
     author='Simon Crowe',
@@ -77,7 +77,6 @@ setup(
                 'snusnu.terminal',
                 'snusnu.browse_products',
                 'snusnu.errors',
-                'snusnu.text_process',
                 'snusnu.data',
                 'snusnu.headless',
                 'snusnu.present_recommendations'],
@@ -87,7 +86,6 @@ setup(
     # requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
     install_requires=[  'selenium',
-                        'nltk',
                         'requests',
                         'pillow'
                       ],
