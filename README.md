@@ -5,7 +5,7 @@ A tool for 'training' the recommendation system used by the online retail giant 
 
 install the package
 
-    pip install git+https://github.com/simoncrowe/snusnu.git
+    pip install git+https://github.com/simoncrowe/snu-snu.git
 Run your python interpreter. i.e.
 
     python3
