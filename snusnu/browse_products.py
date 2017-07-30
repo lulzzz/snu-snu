@@ -1,12 +1,5 @@
 #!/usr/bin/env python3
 
-# Local:
-import snusnu.authentication as authentication
-from snusnu.element_ids import *
-from snusnu.helpers import is_int
-from snusnu.errors import category_xpath_error
-
-# External:
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
@@ -15,6 +8,11 @@ from selenium.common.exceptions import ElementNotVisibleException
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import WebDriverException
 from selenium.common.exceptions import StaleElementReferenceException
+
+import snusnu.authentication as authentication
+from snusnu.element_ids import *
+from snusnu.helpers import is_int
+from snusnu.errors import category_xpath_error
 
 IMPLICIT_WAIT = 3; # seconds for the driver to wait for elements to load
 
@@ -286,99 +284,3 @@ def add_item_list(drv):
         print('Unknown error. Failed to add video to watchlist.')
         
     return False
-
-'''
-DEFUNCT FUNCTION v
-
-def set_shopping_list_default(drv):
-    """
-    WARNING: Not functional. Intended to set default wishlist
-    to "shopping list" from "wishlist".
-    """
-    print('Attempting to navigate to "Lists"...')
-    successful = False
-    try:
-        lists_link_button = drv.find_element_by_id(WISHLISTS_LINK_ID)
-        lists_link_button.click()
-        successful = True
-        print('Success!')
-    except NoSuchElementException:
-        print('Error: no "lists" link element found matching stored ID.')
-    except ElementNotVisibleException:
-        print('Error: "Lists" link identified by stored ID not visible.')
-        print('Trying getting the link directly...')
-        try:
-            drv.get(lists_link_button.get_attribute('href'))
-            successful = True
-            print('Success!')
-        except WebDriverException:
-            print('Error failed to navigate to "Lists" page.')
-    if not successful:
-        try:
-            print('Trying to get the "lists" link from the menu...' )
-            lists_menu_link = drv.find_element_by_xpath(
-                                    WISHLISTS_MENU_LINK_XPATH)
-            drv.get(lists_menu_link.get_attribute('href'))
-            print('Success!')
-        except NoSuchElementException:
-            print('Error: no "lists" link element found matching '
-                    + 'stored XPATH.')
-            return False
-        except WebDriverException:
-            print('Error failed to navigate to "Lists" page.')
-            return False
-
-    print('Trying to open "Lists" settings...')
-    try:
-        settings_link = drv.find_element_by_xpath(
-                        WISHLISTS_SETTINGS_LINK_XPATH)
-        settings_link.click()
-        print('Success!')
-    except NoSuchElementException:
-        print('Error: No "Lists" settings button found matching'
-                + 'stored XPATH.')
-        return False
-    except ElementNotVisibleException:
-        print('Error: "Lists" settings button not visible.')
-        return False
-    except WebDriverException:
-        print('Unknown error in finding or clicking "Lists"'
-                                    + 'settings button.')
-        return False
-
-    print('Trying to select "Shopping list" as default...')
-    try:
-        # MAY NEED TO ASK SELENIUM TO WAIT UNTIL SELECT IS VISIBLE
-        shopping_list_default_select = drv.find_element_by_xpath(
-                            WISHLISTS_SHOPPING_DEFAULT_SELECT_XPATH)
-        shopping_list_default_select.click()
-        print('Success!')
-    except NoSuchElementException:
-        print('Error: No "Shopping list" select found matching '
-                                            + 'stored XPATH.')
-        return False
-    except ElementNotVisibleException:
-        print('Error: "Shopping list" select not visible.')
-        return False
-    except WebDriverException:
-        print('Unknown error in finding or clicking "Shopping list"'
-                                                    + ' select.')
-        return False
-
-    print('Trying to submit chanes to settings...')
-    try:
-        settings_submit_button = drv.find_element_by_xpath(
-                            WISHLISTS_SETTINGS_SUMBIT_BUTTON_XPATH)
-        settings_submit_button.click()
-        print('Success!')
-    except NoSuchElementException:
-        print('Error: No "submit" button found matching stored XPATH.')
-        return False
-    except ElementNotVisibleException:
-        print('Error: "submit" button not visible.')
-        return False
-    except WebDriverException:
-        print('Unknown error in finding or clicking "submit" button.')
-        return False
-    return True
-'''

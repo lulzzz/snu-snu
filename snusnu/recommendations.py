@@ -1,15 +1,15 @@
-# Local
+import json
+
+from selenium.common.exceptions import NoSuchElementException
+from selenium.common.exceptions import ElementNotVisibleException
+from selenium.common.exceptions import WebDriverException
+from selenium import webdriver
+
 from snusnu.element_ids import *
 from snusnu.helpers import keep_strings_matching
 import snusnu.data as data
 import snusnu.authentication as authentication
 
-# External
-from selenium.common.exceptions import NoSuchElementException
-from selenium.common.exceptions import ElementNotVisibleException
-from selenium.common.exceptions import WebDriverException
-from selenium import webdriver
-import json
 
 def get_recommendations_json(driver,
                             number_of_recommendations,

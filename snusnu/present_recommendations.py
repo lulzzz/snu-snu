@@ -1,10 +1,8 @@
-# Local
-from snusnu.helpers import output_command_arguments
-import snusnu.data as data
-
-# External
 import sys
 import os
+
+from snusnu.helpers import output_command_arguments
+import snusnu.data as data
 
 def make_html(product_descriptions, img_dir = 'img', number_of_columns = 4):
     """
@@ -25,7 +23,7 @@ def make_html(product_descriptions, img_dir = 'img', number_of_columns = 4):
             html.append('</tr><tr>')
             column_count = 0
         html.append('<td><div><strong>' + pd[i].name + '</strong>')
-        html.append('<br/>' + pd[i].price + '</div>')
+        html.append('<br/>' + '</div></td><td>')
         image_path = img_dir + '/' + pd[i].name[0:5] + str(i) + '.gif'
         html.append('<img src="'+ image_path + '">' + '</td>')
         data.base_64_gif_to_file(pd[i].image, image_path)
@@ -38,9 +36,9 @@ def make_html_file_terminal():
     html = make_html(descriptions)
     data.string_to_file(html, sys.argv[3])
     
-def make_html_file(path_to_descriptions, path_to_html):
+def make_html_file(path_to_descriptions, path_to_html, cols=4, imgdir='img'):
     descriptions = data.product_descriptions_from_file(path_to_descriptions)
-    html = make_html(descriptions)
+    html = make_html(descriptions, imgdir, cols)
     data.string_to_file(html, path_to_html)
 
 # Dictionary of dictionaries defining command arguments accepted by snu-snu

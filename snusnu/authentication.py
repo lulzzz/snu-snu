@@ -1,19 +1,15 @@
-# Local:
-from snusnu.element_ids import *
-
-# External:
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
 
-IMPLICIT_WAIT = 3; # seconds for the drv to wait for elements to load
+from snusnu.element_ids import *
+
+IMPLICIT_WAIT = 3; # seconds for the driver to wait for elements to load
 # elements ids used on Amazon.co.uk home page that link to sign-in page
 
 def sign_in(drv, username, password, amazon_url = AMAZON_UK_URL):
     drv.implicitly_wait(IMPLICIT_WAIT)
     drv.get(amazon_url)
-    print(drv.page_source.encode("utf-8"))
-
     already_signed_in = True;
 
     try:

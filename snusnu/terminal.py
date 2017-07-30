@@ -1,18 +1,17 @@
 #!/usr/bin/env python3
 
-# Local:
+import sys
+import json
+import getpass
+from enum import Enum
+
+from selenium import webdriver
+
 import snusnu.errors as errors
 import snusnu.authentication as authentication
 import snusnu.data as data
 import snusnu.browse_products as browse_products
 from snusnu.helpers import is_int, yes_no_input_prompt, int_input_prompt
-
-# External:
-import sys
-import json
-from selenium import webdriver
-import getpass
-from enum import Enum
 
 COMMANDS = [data.Command('search',
             'Carry out a single product search.',

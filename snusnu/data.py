@@ -1,14 +1,13 @@
-# Local
-import snusnu.errors as errors
-
-# External
 import json
 import enum
 from enum import Enum
-from PIL import Image
 import requests
+import base64 
 from io import BytesIO
-import base64
+
+from PIL import Image
+
+import snusnu.errors as errors
 
 TEMP_GIF_PATH = 'tmp/imageparsetemp'
 
