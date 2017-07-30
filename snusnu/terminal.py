@@ -77,7 +77,7 @@ out of training Amazon's recommendation algorithm.\n""")
                     print('Quitting...')
                     quit()
 
-    # Tries to get an authenticated drv
+    # Tries to get an authenticated driver
     drv = authenticate()
 
     if proceed_with_args:
