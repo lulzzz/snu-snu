@@ -1,5 +1,5 @@
 # snu-snu
-A tool for 'training' the recommendation system used by the online retail giant Amazon. This package is not also partly useable via the web application http://rars.online.
+A tool for 'training' the recommendation system used by the online retail giant Amazon. This package is now also partly useable via the web application http://rars.online.
 
 ##### Basic use
 
